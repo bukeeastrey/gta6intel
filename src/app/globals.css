@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-bebas: 'Bebas Neue', sans-serif;
+  --font-jetbrains: 'JetBrains Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #080810;
+  color: #e2e2f0;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2a2a45; border-radius: 2px; }
+
+/* Selection */
+::selection { background: rgba(255, 107, 0, 0.3); }
+
+@layer components {
+  .label-badge {
+    @apply inline-block font-mono text-xs px-2 py-0.5 rounded font-semibold tracking-wide;
+  }
+  .label-CONFIRMED { @apply bg-confirmed/10 text-confirmed border border-confirmed/30; }
+  .label-RUMOR     { @apply bg-rumor/10 text-rumor border border-rumor/30; }
+  .label-LEAK      { @apply bg-leak/10 text-leak border border-leak/30; }
+  .label-ANALYSIS  { @apply bg-analysis/10 text-analysis border border-analysis/30; }
+
+  .card {
+    @apply bg-surface border border-border rounded-lg overflow-hidden transition-all duration-200;
+  }
+  .card:hover {
+    @apply border-border2 -translate-y-0.5;
+  }
+
+  .btn-primary {
+    @apply bg-accent text-black font-bold px-4 py-2 rounded text-sm transition-opacity hover:opacity-80;
+  }
+}
