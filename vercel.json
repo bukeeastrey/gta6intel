@@ -2,11 +2,7 @@
   "crons": [
     {
       "path": "/api/pipeline/trigger",
-      "schedule": "*/30 * * * *"
-    },
-    {
-      "path": "/api/youtube/monitor",
-      "schedule": "0 */6 * * *"
+      "schedule": "0 8 * * *"
     }
   ]
 }
