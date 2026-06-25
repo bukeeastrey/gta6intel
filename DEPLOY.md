@@ -74,7 +74,7 @@
 ## STEP 6 — Connect your domain (3 mins)
 
 1. In Vercel → your project → Settings → Domains
-2. Add domain: gta6intel.us
+2. Add domain: gta6intel.net
 3. Vercel shows you DNS records to add
 4. Log into Namecheap (where you bought the domain)
 5. Domain List → Manage → Advanced DNS
