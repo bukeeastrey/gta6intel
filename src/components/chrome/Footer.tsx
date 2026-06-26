@@ -7,11 +7,11 @@ import Link from 'next/link';
 import { useUi } from './UiProvider';
 
 const SOCIALS = [
-  { cls: 'x', icon: 'ico-x', href: 'https://x.com/gta6intel_world' },
+  { cls: 'x', icon: 'ico-x', href: 'https://x.com/gta6intel_gg' },
   { cls: 'dc', icon: 'ico-dc', href: 'https://discord.gg/G9m5w78N9' },
-  { cls: 'yt', icon: 'ico-yt', href: 'https://www.youtube.com/@GTA6intel-gg' },
-  { cls: 'tk', icon: 'ico-tk', href: 'https://tiktok.com' },
-  { cls: 'ig', icon: 'ico-ig', href: 'https://instagram.com' },
+  { cls: 'yt', icon: 'ico-yt', href: 'https://www.youtube.com/@gta6intel_gg' },
+  { cls: 'tk', icon: 'ico-tk', href: 'https://www.tiktok.com/@gta6intel_gg' },
+  { cls: 'ig', icon: 'ico-ig', href: 'https://www.instagram.com/gta6intel_gg' },
 ];
 
 export function Footer() {
@@ -21,7 +21,13 @@ export function Footer() {
       <div className="f-grid rv">
         <div className="f-brand">
           <div className="f-logo">
-            <div className="f-logo-mark">G6</div>
+            <div className="f-logo-mark" style={{ background: 'transparent' }}>
+              <svg viewBox="0 0 32 32" width="30" height="30" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="16" cy="16" r="16" fill="#16161A" />
+                <text x="13" y="23" textAnchor="middle" fontFamily="Arial, Helvetica, sans-serif" fontWeight="900" fontSize="19" fill="#F4EFE3">6</text>
+                <path transform="translate(23 10)" d="M0,-4.5 L1.2,-1.2 L4.5,0 L1.2,1.2 L0,4.5 L-1.2,1.2 L-4.5,0 L-1.2,-1.2 Z" fill="#FF6A1A" />
+              </svg>
+            </div>
             <span><em>GTA6</em>Intel</span>
           </div>
           <p>

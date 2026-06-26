@@ -21,11 +21,11 @@ const DURATION = 6000;
 const BG_CLASSES = ['s1', 's2', 's3', 's4'];
 
 const SOCIALS = [
-  { cls: 'x', icon: 'ico-x', href: 'https://x.com/gta6intel_world' },
+  { cls: 'x', icon: 'ico-x', href: 'https://x.com/gta6intel_gg' },
   { cls: 'dc', icon: 'ico-dc', href: 'https://discord.gg/G9m5w78N9' },
-  { cls: 'yt', icon: 'ico-yt', href: 'https://www.youtube.com/@GTA6intel-gg' },
-  { cls: 'tk', icon: 'ico-tk', href: 'https://tiktok.com' },
-  { cls: 'ig', icon: 'ico-ig', href: 'https://instagram.com' },
+  { cls: 'yt', icon: 'ico-yt', href: 'https://www.youtube.com/@gta6intel_gg' },
+  { cls: 'tk', icon: 'ico-tk', href: 'https://www.tiktok.com/@gta6intel_gg' },
+  { cls: 'ig', icon: 'ico-ig', href: 'https://www.instagram.com/gta6intel_gg' },
 ];
 
 export function HeroSlider({ slides }: { slides: Article[] }) {

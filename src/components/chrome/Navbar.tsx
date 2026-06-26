@@ -7,17 +7,65 @@
 //  • hamburger toggles the mobile menu (state lives in UiProvider)
 // ════════════════════════════════════════════════════════════
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { useUi } from './UiProvider';
 
 const NAV_LINKS = [
-  { label: 'All', href: '/news' },
+  { label: 'All', href: '/' },
   { label: 'Confirmed', href: '/news?category=confirmed' },
   { label: 'Intel', href: '/news?category=intel' },
   { label: 'Analysis', href: '/news?category=analysis' },
   { label: 'Videos', href: '/videos' },
   { label: 'Guides', href: '/guides' },
 ];
+
+// Is a given nav link the one matching the current URL?
+function isActive(href: string, pathname: string, category: string | null): boolean {
+  if (href === '/') return pathname === '/'; // "All" → home
+  const [base, query] = href.split('?');
+  if (query) {
+    // category links, e.g. /news?category=confirmed
+    const want = new URLSearchParams(query).get('category');
+    return pathname === base && category === want;
+  }
+  // section links, e.g. /videos, /guides (and their sub-pages)
+  return pathname === base || pathname.startsWith(`${base}/`);
+}
+
+// Center links. Split out because it reads the query string
+// (useSearchParams), which must sit inside a <Suspense> boundary.
+function CenterLinks() {
+  const pathname = usePathname();
+  const category = useSearchParams().get('category');
+  return (
+    <>
+      {NAV_LINKS.map((l) => (
+        <li key={l.label}>
+          <Link href={l.href} className={isActive(l.href, pathname, category) ? 'active' : undefined}>
+            {l.label}
+          </Link>
+        </li>
+      ))}
+    </>
+  );
+}
+
+// Fallback during prerender: highlight by path only (no query yet).
+function CenterLinksFallback() {
+  const pathname = usePathname();
+  return (
+    <>
+      {NAV_LINKS.map((l) => (
+        <li key={l.label}>
+          <Link href={l.href} className={isActive(l.href, pathname, null) ? 'active' : undefined}>
+            {l.label}
+          </Link>
+        </li>
+      ))}
+    </>
+  );
+}
 
 export function Navbar() {
   const { openModal, toggleMenu, menuOpen } = useUi();
@@ -48,23 +96,24 @@ export function Navbar() {
     <nav className={`nav${scrolled ? ' scrolled' : ''}`} id="nav">
       {/* Logo */}
       <Link href="/" className="nav-logo" aria-label="GTA6Intel home">
-        <svg className="nav-logo-svg" viewBox="0 0 200 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <text x="0" y="31" fontFamily="Georgia, 'Times New Roman', serif" fontSize="30" fontWeight="900" fontStyle="italic" letterSpacing="-1" fill="white" className="logo-gta6">GTA</text>
-          <text x="58" y="31" fontFamily="Georgia, 'Times New Roman', serif" fontSize="30" fontWeight="900" fontStyle="italic" letterSpacing="-1" fill="#FF5C00">VI</text>
-          <text x="92" y="18" fontFamily="Inter, sans-serif" fontSize="10" fontWeight="800" letterSpacing="4" fill="#FF5C00">INTEL</text>
-          <rect x="92" y="23" width="46" height="2" rx="1" fill="#FF5C00" opacity="0.45" />
+        <svg className="nav-logo-svg" viewBox="0 0 188 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          {/* "6" mark — recolors with .logo-gta6 (cream over hero → ink on scroll) */}
+          <text x="2" y="33" fontFamily="Arial, Helvetica, sans-serif" fontSize="36" fontWeight="900" fill="#F4EFE3" className="logo-gta6">6</text>
+          {/* orange spark */}
+          <path transform="translate(32 11)" d="M0,-6 L1.6,-1.6 L6,0 L1.6,1.6 L0,6 L-1.6,1.6 L-6,0 L-1.6,-1.6 Z" fill="#FF6A1A" />
+          {/* wordmark — also recolors */}
+          <text x="46" y="27" fontFamily="Inter, Arial, sans-serif" fontSize="16" fontWeight="800" letterSpacing="0.3" fill="#F4EFE3" className="logo-gta6">GTA6INTEL</text>
+          {/* ".GG" pill — always orange */}
+          <rect x="150" y="13" width="30" height="15" rx="7.5" fill="#FF6A1A" />
+          <text x="165" y="24.5" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="10" fontWeight="800" fill="#0A0A0C">GG</text>
         </svg>
       </Link>
 
       {/* Center links */}
       <ul className="nav-links">
-        {NAV_LINKS.map((l, i) => (
-          <li key={l.label}>
-            <Link href={l.href} className={i === 0 ? 'active' : undefined}>
-              {l.label}
-            </Link>
-          </li>
-        ))}
+        <Suspense fallback={<CenterLinksFallback />}>
+          <CenterLinks />
+        </Suspense>
         <li className={`more-wrap${moreOpen ? ' open' : ''}`} ref={moreRef}>
           <button className="more-btn" onClick={() => setMoreOpen((v) => !v)} aria-expanded={moreOpen}>
             More

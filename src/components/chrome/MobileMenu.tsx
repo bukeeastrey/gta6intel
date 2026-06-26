@@ -5,10 +5,11 @@
 // and these links stay in sync. Ported from v9 .mobile-menu markup.
 // ════════════════════════════════════════════════════════════
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useUi } from './UiProvider';
 
 const LINKS = [
-  { label: 'All', href: '/news', active: true },
+  { label: 'All', href: '/' },
   { label: 'Confirmed', href: '/news?category=confirmed' },
   { label: 'Intel', href: '/news?category=intel' },
   { label: 'Analysis', href: '/news?category=analysis' },
@@ -17,15 +18,23 @@ const LINKS = [
 ];
 
 const SOCIALS = [
-  { cls: 'x', icon: 'ico-x', href: 'https://x.com' },
+  { cls: 'x', icon: 'ico-x', href: 'https://x.com/gta6intel_gg' },
   { cls: 'dc', icon: 'ico-dc', href: 'https://discord.gg/G9m5w78N9' },
-  { cls: 'yt', icon: 'ico-yt', href: 'https://www.youtube.com/@GTA6intel-gg' },
-  { cls: 'tk', icon: 'ico-tk', href: 'https://tiktok.com' },
-  { cls: 'ig', icon: 'ico-ig', href: 'https://instagram.com' },
+  { cls: 'yt', icon: 'ico-yt', href: 'https://www.youtube.com/@gta6intel_gg' },
+  { cls: 'tk', icon: 'ico-tk', href: 'https://www.tiktok.com/@gta6intel_gg' },
+  { cls: 'ig', icon: 'ico-ig', href: 'https://www.instagram.com/gta6intel_gg' },
 ];
 
 export function MobileMenu() {
   const { menuOpen, closeMenu, openModal } = useUi();
+  const pathname = usePathname();
+
+  // Highlight the link matching the current page (path-based).
+  const isActive = (href: string) => {
+    if (href === '/') return pathname === '/';
+    const base = href.split('?')[0];
+    return pathname === base || pathname.startsWith(`${base}/`);
+  };
 
   return (
     <div className={`mobile-menu${menuOpen ? ' open' : ''}`} id="mobileMenu">
@@ -34,7 +43,7 @@ export function MobileMenu() {
           <Link
             key={l.label}
             href={l.href}
-            className={`mm-link${l.active ? ' active' : ''}`}
+            className={`mm-link${isActive(l.href) ? ' active' : ''}`}
             onClick={closeMenu}
           >
             {l.label}

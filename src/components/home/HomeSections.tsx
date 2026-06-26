@@ -7,11 +7,11 @@
 // ════════════════════════════════════════════════════════════
 
 const SOCIALS = [
-  { cls: 'sf-x', icon: 'ico-x', label: 'X / Twitter', href: 'https://x.com/gta6intel_world' },
+  { cls: 'sf-x', icon: 'ico-x', label: 'X / Twitter', href: 'https://x.com/gta6intel_gg' },
   { cls: 'sf-dc', icon: 'ico-dc', label: 'Discord', href: 'https://discord.gg/G9m5w78N9' },
-  { cls: 'sf-yt', icon: 'ico-yt', label: 'YouTube', href: 'https://www.youtube.com/@GTA6intel-gg' },
-  { cls: 'sf-tk', icon: 'ico-tk', label: 'TikTok', href: 'https://tiktok.com' },
-  { cls: 'sf-ig', icon: 'ico-ig', label: 'Instagram', href: 'https://instagram.com' },
+  { cls: 'sf-yt', icon: 'ico-yt', label: 'YouTube', href: 'https://www.youtube.com/@gta6intel_gg' },
+  { cls: 'sf-tk', icon: 'ico-tk', label: 'TikTok', href: 'https://www.tiktok.com/@gta6intel_gg' },
+  { cls: 'sf-ig', icon: 'ico-ig', label: 'Instagram', href: 'https://www.instagram.com/gta6intel_gg' },
 ];
 
 export function SocialFollow() {

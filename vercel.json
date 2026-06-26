@@ -1,8 +1,6 @@
 {
   "crons": [
-    {
-      "path": "/api/pipeline/trigger",
-      "schedule": "0 8 * * *"
-    }
+    { "path": "/api/pipeline/ingest", "schedule": "0 8 * * *" },
+    { "path": "/api/pipeline/videos", "schedule": "0 9 * * *" }
   ]
 }
