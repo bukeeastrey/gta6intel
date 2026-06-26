@@ -6,7 +6,6 @@
 // When an article has no image we render the gradient placeholder
 // block, preserving the editorial mix of the original design.
 // ════════════════════════════════════════════════════════════
-import Image from 'next/image';
 import Link from 'next/link';
 import type { Article } from '@/lib/types';
 import { timeAgo, gradientFor } from '@/lib/utils';
@@ -41,13 +40,15 @@ export function ArticleCard({
         {showImage && (
           <div className="card-img-wrap" style={{ height: imageHeight }}>
             {article.image_url ? (
-              <Image
+              // External news-CDN images load directly (not via next/image),
+              // so any source host works without an allowlist.
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
                 src={article.image_url}
                 alt={article.image_alt || article.title}
-                fill
-                sizes="(max-width: 640px) 100vw, (max-width: 1100px) 50vw, 33vw"
+                loading={priority ? 'eager' : 'lazy'}
                 className="next-img"
-                priority={priority}
+                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
               />
             ) : (
               // No image → brand gradient placeholder (keeps layout rhythm).

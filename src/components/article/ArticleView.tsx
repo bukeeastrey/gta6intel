@@ -5,7 +5,6 @@
 //   • body rendered as plain-text paragraphs
 //   • 336×280 rectangle ad after paragraph 3 (ad spec)
 // ════════════════════════════════════════════════════════════
-import Image from 'next/image';
 import Link from 'next/link';
 import type { ArticleFull } from '@/lib/articles';
 import { longDate } from '@/lib/utils';
@@ -47,13 +46,12 @@ export function ArticleView({ article, backHref, backLabel }: ArticleViewProps) 
 
       {article.image_url && (
         <div className={styles.heroImg}>
-          <Image
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src={article.image_url}
             alt={article.image_alt || article.title}
-            fill
-            sizes="(max-width: 760px) 100vw, 760px"
             className="next-img"
-            priority
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
           />
         </div>
       )}

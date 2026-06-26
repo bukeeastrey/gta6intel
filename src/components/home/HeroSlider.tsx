@@ -8,7 +8,6 @@
 //   • side panel: live countdown + community (Discord / newsletter / socials)
 // Data-driven: `slides` are the featured articles from Supabase.
 // ════════════════════════════════════════════════════════════
-import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Article } from '@/lib/types';
@@ -108,13 +107,13 @@ export function HeroSlider({ slides }: { slides: Article[] }) {
           <div className={`slide${i === cur ? ' active' : ''}`} key={s.id} aria-hidden={i !== cur}>
             <div className={`slide-bg ${BG_CLASSES[i % BG_CLASSES.length]}`}>
               {s.image_url && (
-                <Image
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
                   src={s.image_url}
                   alt={s.image_alt || s.title}
-                  fill
-                  sizes="100vw"
+                  loading={i === 0 ? 'eager' : 'lazy'}
                   className="next-img"
-                  priority={i === 0}
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
                 />
               )}
             </div>
