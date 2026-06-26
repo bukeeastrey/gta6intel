@@ -1,34 +1,34 @@
-// ═══════════════════════════════════════════════════════════
-// /api/newsletter
-// POST: Subscribe an email to GTA6Intel Weekly
-// ═══════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════
+// POST /api/newsletter — newsletter signup.
+// Inserts into `subscribers` (RLS policy "Public can subscribe"
+// allows anonymous inserts). Duplicate email = treated as success.
+// ════════════════════════════════════════════════════════════
+import { NextResponse } from 'next/server';
+import { createSupabaseServerClient } from '@/lib/supabaseServer';
 
-import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
-export async function POST(request: NextRequest) {
+export async function POST(req: Request) {
   try {
-    const { email } = await request.json()
+    const body = (await req.json()) as { email?: unknown };
+    const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
 
-    if (!email || !email.includes('@')) {
-      return NextResponse.json({ error: 'Valid email required' }, { status: 400 })
+    if (!EMAIL_RE.test(email)) {
+      return NextResponse.json({ error: 'Invalid email' }, { status: 400 });
     }
 
-    const { error } = await supabaseAdmin
-      .from('subscribers')
-      .insert({ email: email.toLowerCase().trim() })
+    const supabase = createSupabaseServerClient();
+    const { error } = await supabase.from('subscribers').insert({ email });
 
     if (error) {
-      // Duplicate email — already subscribed
-      if (error.code === '23505') {
-        return NextResponse.json({ message: 'Already subscribed!' })
-      }
-      throw error
+      // 23505 = unique violation → already subscribed, that's fine.
+      if (error.code === '23505') return NextResponse.json({ ok: true, already: true });
+      console.error('[newsletter]', error.message);
+      return NextResponse.json({ error: 'Could not subscribe' }, { status: 500 });
     }
 
-    return NextResponse.json({ message: 'Subscribed successfully!' })
-  } catch (error) {
-    console.error('Newsletter signup error:', error)
-    return NextResponse.json({ error: 'Signup failed' }, { status: 500 })
+    return NextResponse.json({ ok: true });
+  } catch {
+    return NextResponse.json({ error: 'Bad request' }, { status: 400 });
   }
 }

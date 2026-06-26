@@ -1,30 +1,34 @@
-import { MetadataRoute } from 'next'
-import { supabaseAdmin } from '@/lib/supabase'
+// app/sitemap.ts → served at /sitemap.xml
+import type { MetadataRoute } from 'next';
+import { createSupabaseServerClient } from '@/lib/supabaseServer';
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gta6intel.com';
+
+// Regenerate the sitemap hourly.
+export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://gta6intel.us'
+  const supabase = createSupabaseServerClient();
 
-  // Static pages
-  const staticPages: MetadataRoute.Sitemap = [
-    { url: baseUrl, lastModified: new Date(), changeFrequency: 'hourly', priority: 1 },
-    { url: `${baseUrl}/news`, lastModified: new Date(), changeFrequency: 'hourly', priority: 0.9 },
-    { url: `${baseUrl}/guides`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.8 },
-  ]
-
-  // Dynamic article pages
-  const { data: articles } = await supabaseAdmin
+  // Pull article slugs (+ optional guide slugs) for dynamic entries.
+  const { data: articles } = await supabase
     .from('articles')
-    .select('slug, updated_at')
-    .eq('is_published', true)
+    .select('slug, published_at')
     .order('published_at', { ascending: false })
-    .limit(500)
+    .limit(5000);
 
-  const articlePages: MetadataRoute.Sitemap = (articles || []).map(article => ({
-    url: `${baseUrl}/news/${article.slug}`,
-    lastModified: new Date(article.updated_at),
-    changeFrequency: 'weekly' as const,
-    priority: 0.7,
-  }))
+  const staticRoutes: MetadataRoute.Sitemap = [
+    { url: `${SITE_URL}/`, changeFrequency: 'hourly', priority: 1 },
+    { url: `${SITE_URL}/news`, changeFrequency: 'hourly', priority: 0.9 },
+    { url: `${SITE_URL}/guides`, changeFrequency: 'weekly', priority: 0.7 },
+  ];
 
-  return [...staticPages, ...articlePages]
+  const articleRoutes: MetadataRoute.Sitemap = (articles ?? []).map((a) => ({
+    url: `${SITE_URL}/news/${a.slug}`,
+    lastModified: a.published_at ? new Date(a.published_at) : undefined,
+    changeFrequency: 'weekly',
+    priority: 0.8,
+  }));
+
+  return [...staticRoutes, ...articleRoutes];
 }

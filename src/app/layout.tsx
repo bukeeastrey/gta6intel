@@ -1,44 +1,91 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import './globals.css'
+// ════════════════════════════════════════════════════════════
+// Root layout — fonts, global SEO defaults, and site chrome.
+// All shared UI (nav, mobile menu, modals, ticker, footer, AI fab)
+// lives here inside <UiProvider> so every route gets it consistently.
+// ════════════════════════════════════════════════════════════
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
+import { UiProvider } from '@/components/chrome/UiProvider';
+import { SvgDefs } from '@/components/chrome/SvgDefs';
+import { Navbar } from '@/components/chrome/Navbar';
+import { MobileMenu } from '@/components/chrome/MobileMenu';
+import { Modals } from '@/components/chrome/Modals';
+import { Ticker } from '@/components/chrome/Ticker';
+import { Footer } from '@/components/chrome/Footer';
+import { AiFab } from '@/components/chrome/AiFab';
+import { ScrollReveal } from '@/components/chrome/ScrollReveal';
+
+// Inter as a CSS variable → consumed by globals.css (--font-stack-inter).
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700', '800', '900'],
+  variable: '--font-inter',
+  display: 'swap',
+});
+
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || 'https://gta6intel.com';
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: 'GTA6Intel.us — GTA 6 News, Guides & Intelligence',
-    template: '%s | GTA6Intel.us'
+    default: 'GTA6Intel — GTA 6 News, Guides & Intelligence',
+    template: '%s · GTA6Intel',
   },
-  description: 'The fastest, most accurate GTA 6 news hub. Confirmed updates, leak tracking, guides, and community intelligence — no filler.',
-  keywords: ['GTA 6', 'GTA VI', 'Grand Theft Auto 6', 'GTA 6 release date', 'GTA 6 news', 'GTA 6 guides'],
+  description:
+    'The independent GTA 6 intelligence hub. Confirmed news, leaks, analysis, ' +
+    'a live launch countdown, and post-launch guides for Grand Theft Auto VI.',
+  applicationName: 'GTA6Intel',
+  keywords: ['GTA 6', 'GTA VI', 'Grand Theft Auto VI', 'Leonida', 'Vice City', 'Rockstar'],
+  alternates: { canonical: '/' },
   openGraph: {
     type: 'website',
-    siteName: 'GTA6Intel.us',
-    url: 'https://gta6intel.us',
+    siteName: 'GTA6Intel',
+    url: SITE_URL,
+    title: 'GTA6Intel — GTA 6 News, Guides & Intelligence',
+    description:
+      'Confirmed news, leaks, analysis, a live launch countdown, and guides for GTA 6.',
   },
   twitter: {
     card: 'summary_large_image',
-    site: '@GTA6Intel',
+    site: '@gta6intel',
+    title: 'GTA6Intel — GTA 6 News, Guides & Intelligence',
+    description: 'Confirmed news, leaks, analysis, and a live launch countdown for GTA 6.',
   },
-  robots: {
-    index: true,
-    follow: true,
-  }
-}
+  robots: { index: true, follow: true },
+};
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;600&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body className={`${inter.variable} font-body bg-bg text-text-primary antialiased`}>
-        {children}
+    <html lang="en" className={inter.variable}>
+      <body>
+        <UiProvider>
+          {/* Reusable icon sprite (used by nav/footer/socials) */}
+          <SvgDefs />
+
+          {/* Fixed chrome */}
+          <Navbar />
+          <MobileMenu />
+
+          {/* Page content */}
+          {children}
+
+          {/* Site-wide footer + fixed overlays */}
+          <Footer />
+          <Ticker />
+          <AiFab />
+
+          {/* Modals + scroll-reveal observer */}
+          <Modals />
+          <ScrollReveal />
+        </UiProvider>
       </body>
     </html>
-  )
+  );
 }
