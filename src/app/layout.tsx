@@ -5,6 +5,7 @@
 // ════════════════════════════════════════════════════════════
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import Script from 'next/script';
 import './globals.css';
 
 import { UiProvider } from '@/components/chrome/UiProvider';
@@ -26,7 +27,13 @@ const inter = Inter({
 });
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || 'https://gta6intel.com';
+  process.env.NEXT_PUBLIC_SITE_URL || 'https://gta6intel-gg.com';
+
+// Set these in Vercel once you have them (safe to be absent):
+//   NEXT_PUBLIC_ADSENSE_CLIENT     e.g. "ca-pub-1234567890123456"
+//   NEXT_PUBLIC_GOOGLE_VERIFICATION  the code from Search Console
+const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
+const GOOGLE_VERIFICATION = process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -50,11 +57,15 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    site: '@gta6intel',
+    site: '@gta6intel_gg',
     title: 'GTA6Intel — GTA 6 News, Guides & Intelligence',
     description: 'Confirmed news, leaks, analysis, and a live launch countdown for GTA 6.',
   },
   robots: { index: true, follow: true },
+  // Search Console ownership (set NEXT_PUBLIC_GOOGLE_VERIFICATION in Vercel).
+  ...(GOOGLE_VERIFICATION ? { verification: { google: GOOGLE_VERIFICATION } } : {}),
+  // Helps AdSense associate the site with your account.
+  ...(ADSENSE_CLIENT ? { other: { 'google-adsense-account': ADSENSE_CLIENT } } : {}),
 };
 
 export default function RootLayout({
@@ -65,6 +76,16 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body>
+        {/* Google AdSense loader — only loads once you set the client ID. */}
+        {ADSENSE_CLIENT && (
+          <Script
+            id="adsbygoogle-init"
+            async
+            strategy="afterInteractive"
+            crossOrigin="anonymous"
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+          />
+        )}
         <UiProvider>
           {/* Reusable icon sprite (used by nav/footer/socials) */}
           <SvgDefs />

@@ -69,9 +69,16 @@ function CenterLinksFallback() {
 
 export function Navbar() {
   const { openModal, toggleMenu, menuOpen } = useUi();
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const moreRef = useRef<HTMLLIElement>(null);
+
+  // Only the homepage opens with a dark hero behind a transparent nav.
+  // Every other page has a light background from the top, so the nav
+  // must be solid (dark text) immediately — otherwise it's invisible.
+  const isHome = pathname === '/';
+  const solid = scrolled || !isHome;
 
   // Frost the bar once the user scrolls past the hero lip.
   useEffect(() => {
@@ -93,7 +100,7 @@ export function Navbar() {
   }, []);
 
   return (
-    <nav className={`nav${scrolled ? ' scrolled' : ''}`} id="nav">
+    <nav className={`nav${solid ? ' scrolled' : ''}`} id="nav">
       {/* Logo */}
       <Link href="/" className="nav-logo" aria-label="GTA6Intel home">
         <svg className="nav-logo-svg" viewBox="0 0 188 40" fill="none" xmlns="http://www.w3.org/2000/svg">
