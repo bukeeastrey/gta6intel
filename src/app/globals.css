@@ -79,7 +79,10 @@ body {
 .nav.scrolled .nav-links a { color: var(--ink-soft); }
 .nav-links a:hover { color: white; background: rgba(255,255,255,0.12); }
 .nav.scrolled .nav-links a:hover { color: var(--orange); background: var(--orange-dim); }
-.nav-links a.active { color: var(--orange); }
+.nav-links a.active { color: var(--orange); font-weight: 700; }
+/* On non-home pages the nav is always ".scrolled"; this higher-specificity
+   rule ensures the active link still shows orange (was being overridden). */
+.nav.scrolled .nav-links a.active { color: var(--orange); }
 
 /* More dropdown */
 .more-wrap { position: relative; }

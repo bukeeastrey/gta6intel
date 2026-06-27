@@ -34,6 +34,8 @@ const SITE_URL =
 //   NEXT_PUBLIC_GOOGLE_VERIFICATION  the code from Search Console
 const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
 const GOOGLE_VERIFICATION = process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION;
+// Google Analytics 4 — set NEXT_PUBLIC_GA_ID (e.g. "G-XXXXXXXXXX") in Vercel.
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -76,6 +78,23 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body>
+        {/* Google Analytics 4 — loads only when NEXT_PUBLIC_GA_ID is set. */}
+        {GA_ID && (
+          <>
+            <Script
+              id="ga-lib"
+              async
+              strategy="afterInteractive"
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+            />
+            <Script id="ga-init" strategy="afterInteractive">
+              {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${GA_ID}');`}
+            </Script>
+          </>
+        )}
         {/* Google AdSense loader — only loads once you set the client ID. */}
         {ADSENSE_CLIENT && (
           <Script
