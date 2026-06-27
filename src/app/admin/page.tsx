@@ -42,6 +42,24 @@ export default function AdminPage() {
   const [msg, setMsg] = useState('');
   const [form, setForm] = useState({ ...empty });
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+
+  async function uploadImage(file: File) {
+    setUploading(true); setMsg('');
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const res = await fetch('/api/admin/upload', {
+        method: 'POST',
+        headers: { 'x-admin-password': pw }, // don't set Content-Type for FormData
+        body: fd,
+      });
+      const d = await res.json();
+      if (res.ok && d.url) { setForm((f) => ({ ...f, image_url: d.url })); setMsg('Image uploaded.'); }
+      else setMsg(d.error || 'Upload failed.');
+    } catch { setMsg('Upload failed.'); }
+    finally { setUploading(false); }
+  }
 
   // Restore saved password on load.
   useEffect(() => {
@@ -145,7 +163,18 @@ export default function AdminPage() {
             {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
           </select>
         </div>
-        <input style={S.input} placeholder="Image URL (optional)" value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} />
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 10 }}>
+          <input style={{ ...S.input, marginBottom: 0, flex: 1 }} placeholder="Image URL (or use Upload →)" value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} />
+          <label style={{ ...S.ghost, whiteSpace: 'nowrap', opacity: uploading ? 0.6 : 1 }}>
+            {uploading ? 'Uploading…' : '⬆ Upload'}
+            <input type="file" accept="image/*" style={{ display: 'none' }} disabled={uploading}
+              onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadImage(f); e.target.value = ''; }} />
+          </label>
+        </div>
+        {form.image_url && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={form.image_url} alt="preview" style={{ width: 160, height: 90, objectFit: 'cover', borderRadius: 8, marginBottom: 10, border: '1px solid #1e1e35' }} />
+        )}
         <div style={{ display: 'flex', gap: 10 }}>
           <input style={S.input} placeholder="Source name" value={form.source_name} onChange={(e) => setForm({ ...form, source_name: e.target.value })} />
           <input style={S.input} placeholder="Source URL (optional)" value={form.source_url} onChange={(e) => setForm({ ...form, source_url: e.target.value })} />
