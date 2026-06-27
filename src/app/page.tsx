@@ -16,7 +16,7 @@ import { AdSlot } from '@/components/ui/AdSlot';
 // Incremental Static Regeneration — 60s revalidation per the brief.
 export const revalidate = 60;
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gta6intel.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gta6intel-gg.com';
 
 export default async function HomePage() {
   // Fetch in parallel to keep TTFB low.

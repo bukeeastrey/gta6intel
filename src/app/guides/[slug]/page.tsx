@@ -8,7 +8,7 @@ import { getArticleBySlug } from '@/lib/articles';
 import { ArticleView } from '@/components/article/ArticleView';
 
 export const revalidate = 60;
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gta6intel.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gta6intel-gg.com';
 
 type Params = Promise<{ slug: string }>;
 

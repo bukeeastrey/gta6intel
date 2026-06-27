@@ -8,7 +8,7 @@ import { NewsGrid } from '@/components/home/NewsGrid';
 import styles from '@/styles/content.module.css';
 
 export const revalidate = 60;
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gta6intel.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gta6intel-gg.com';
 
 export const metadata: Metadata = {
   title: 'GTA 6 Guides — Walkthroughs, Tips & How-Tos — GTA6Intel',

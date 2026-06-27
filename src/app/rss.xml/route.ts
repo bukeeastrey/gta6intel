@@ -5,7 +5,7 @@
 import { getLatestArticles } from '@/lib/articles';
 
 export const revalidate = 3600;
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gta6intel.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gta6intel-gg.com';
 
 function esc(s: string): string {
   return s

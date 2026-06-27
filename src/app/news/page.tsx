@@ -9,9 +9,11 @@ import { getArticlesPage } from '@/lib/articles';
 import { NewsGrid } from '@/components/home/NewsGrid';
 import styles from '@/styles/content.module.css';
 
-export const revalidate = 60;
+// Always render fresh on the server so switching category filters never
+// serves a stale/empty cached view (and reflects new articles instantly).
+export const dynamic = 'force-dynamic';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gta6intel.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gta6intel-gg.com';
 const PAGE_SIZE = 12;
 
 // Category tabs. `value` is the ?category= param; undefined = All.
@@ -67,12 +69,13 @@ export default async function NewsPage({ searchParams }: { searchParams: SP }) {
 
   return (
     <main>
-      {/* Section header (reuses v9 styles) */}
-      <div className="section-header">
-        <h2 className="section-title">
-          {category ? <span>{category.toUpperCase()}</span> : <>Latest <span>Intel</span></>}
-        </h2>
-      </div>
+      {/* Page header — uses content styles (120px top clears the fixed nav) */}
+      <header className={styles.head}>
+        <div className={styles.kicker}>GTA6Intel</div>
+        <h1 className={styles.h1}>
+          {category ? category.toUpperCase() : 'Latest Intel'}
+        </h1>
+      </header>
 
       {/* Category tabs */}
       <nav className={styles.filters} aria-label="Filter by category">
@@ -82,6 +85,7 @@ export default async function NewsPage({ searchParams }: { searchParams: SP }) {
             <Link
               key={f.label}
               href={pageHref(f.value, 1)}
+              prefetch={false}
               className={`${styles.pill} ${isActive ? styles.pillActive : ''}`}
             >
               {f.label}

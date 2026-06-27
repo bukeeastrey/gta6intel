@@ -1,7 +1,7 @@
 // app/robots.ts → served at /robots.txt
 import type { MetadataRoute } from 'next';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gta6intel.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gta6intel-gg.com';
 
 export default function robots(): MetadataRoute.Robots {
   return {

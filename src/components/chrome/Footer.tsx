@@ -74,9 +74,9 @@ export function Footer() {
       </div>
 
       <div className="f-bot">
-        <div className="f-copy">© 2026 GTA6Intel.net · All rights reserved</div>
+        <div className="f-copy">© 2026 GTA6Intel · gta6intel-gg.com · All rights reserved</div>
         <div className="f-disc">
-          GTA6Intel.net is an independent fan site. Not affiliated with Rockstar Games
+          GTA6Intel (gta6intel-gg.com) is an independent fan site. Not affiliated with Rockstar Games
           or Take-Two Interactive. Grand Theft Auto is a registered trademark of
           Take-Two Interactive Software, Inc.
         </div>
