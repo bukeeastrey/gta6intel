@@ -101,7 +101,7 @@ export default function AdminPage() {
 
   // ── styles (inline; admin tool, not public brand) ──
   const S = {
-    page: { maxWidth: 960, margin: '0 auto', padding: '40px 20px', color: '#e2e2f0', fontFamily: 'Inter, system-ui, sans-serif' } as const,
+    page: { maxWidth: 960, margin: '0 auto', padding: '104px 20px 40px', color: '#e2e2f0', fontFamily: 'Inter, system-ui, sans-serif' } as const,
     input: { width: '100%', padding: '10px 12px', background: '#0f0f1a', border: '1px solid #1e1e35', borderRadius: 8, color: '#e2e2f0', marginBottom: 10, fontSize: 14 } as const,
     btn: { background: '#ff6b00', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 16px', fontWeight: 700, cursor: 'pointer' } as const,
     ghost: { background: 'transparent', color: '#e2e2f0', border: '1px solid #1e1e35', borderRadius: 8, padding: '6px 10px', cursor: 'pointer', fontSize: 13 } as const,

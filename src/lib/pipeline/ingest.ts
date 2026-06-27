@@ -20,6 +20,35 @@ const MAX_PER_RUN = Number(process.env.PIPELINE_MAX_PER_RUN || 3);
 // Hard cap on items inspected per run (each may cost one Claude call),
 // so a run of mostly-irrelevant items can't blow the time/cost budget.
 const MAX_EXAMINE = Number(process.env.PIPELINE_MAX_EXAMINE || 10);
+// Review window. 0 = publish immediately (default). >0 = save new
+// articles as DRAFTS; the publish-due job makes them live after this many
+// hours unless you publish/reject them first in /admin.
+const REVIEW_HOURS = Number(process.env.PIPELINE_REVIEW_HOURS || 0);
+
+// Publishes pipeline drafts older than the review window that you haven't
+// acted on. Safe no-op when review mode is off. Shared by runIngest and the
+// /api/pipeline/publish-due route.
+export async function publishDueDrafts(
+  supabase: ReturnType<typeof createSupabaseAdminClient>
+): Promise<number> {
+  const hours = Number(process.env.PIPELINE_REVIEW_HOURS || 0);
+  if (hours <= 0) return 0;
+  const cutoff = new Date(Date.now() - hours * 3600_000).toISOString();
+  const { data: due } = await supabase
+    .from('articles')
+    .select('id')
+    .eq('auto_published', true)
+    .eq('is_published', false)
+    .is('published_at', null)
+    .lt('created_at', cutoff);
+  if (!due?.length) return 0;
+  const ids = due.map((d) => d.id);
+  await supabase
+    .from('articles')
+    .update({ is_published: true, published_at: new Date().toISOString() })
+    .in('id', ids);
+  return ids.length;
+}
 
 export interface IngestResult {
   fetched: number;
@@ -79,7 +108,10 @@ export async function runIngest(): Promise<IngestResult> {
       // 4) Unique slug.
       const slug = `${slugify(article.title)}-${urlHash.slice(0, 6)}`;
 
-      // 5) Insert as PUBLISHED.
+      // 5) Insert. In review mode (REVIEW_HOURS>0) it starts as a DRAFT
+      //    with published_at=null; the publish-due job will auto-publish it
+      //    later unless you act on it in /admin first.
+      const reviewMode = REVIEW_HOURS > 0;
       const { data: inserted, error: insErr } = await supabase
         .from('articles')
         .insert({
@@ -92,9 +124,9 @@ export async function runIngest(): Promise<IngestResult> {
           source_url: item.link,
           source_name: item.sourceName,
           image_url: image?.url ?? null,
-          is_published: true,
+          is_published: !reviewMode,
           auto_published: true,
-          published_at: item.isoDate || new Date().toISOString(),
+          published_at: reviewMode ? null : (item.isoDate || new Date().toISOString()),
         })
         .select('id, slug')
         .single();
@@ -138,6 +170,13 @@ export async function runIngest(): Promise<IngestResult> {
     });
   } catch (e) {
     console.error('[ingest] log failed', (e as Error).message);
+  }
+
+  // Safety net: auto-publish any drafts whose review window has elapsed.
+  try {
+    await publishDueDrafts(supabase);
+  } catch (e) {
+    console.error('[ingest] publishDue failed', (e as Error).message);
   }
 
   return result;
