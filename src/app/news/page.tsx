@@ -4,7 +4,6 @@
 // masonry (NewsGrid) so the feed matches the v9 design exactly.
 // ════════════════════════════════════════════════════════════
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { getArticlesPage } from '@/lib/articles';
 import { NewsGrid } from '@/components/home/NewsGrid';
 import styles from '@/styles/content.module.css';
@@ -77,19 +76,19 @@ export default async function NewsPage({ searchParams }: { searchParams: SP }) {
         </h1>
       </header>
 
-      {/* Category tabs */}
+      {/* Category tabs — plain <a> so each click is a real navigation
+          (defeats the client router cache that froze content + highlight). */}
       <nav className={styles.filters} aria-label="Filter by category">
         {FILTERS.map((f) => {
           const isActive = (f.value ?? undefined) === (category ?? undefined);
           return (
-            <Link
+            <a
               key={f.label}
               href={pageHref(f.value, 1)}
-              prefetch={false}
               className={`${styles.pill} ${isActive ? styles.pillActive : ''}`}
             >
               {f.label}
-            </Link>
+            </a>
           );
         })}
       </nav>
@@ -104,13 +103,13 @@ export default async function NewsPage({ searchParams }: { searchParams: SP }) {
       {/* Pagination */}
       {totalPages > 1 && (
         <nav className={styles.pagination} aria-label="Pagination">
-          <Link
+          <a
             href={pageHref(category, page - 1)}
             className={`${styles.pageLink} ${page <= 1 ? styles.pageDisabled : ''}`}
             aria-label="Previous page"
           >
             ←
-          </Link>
+          </a>
 
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) =>
             n === page ? (
@@ -118,19 +117,19 @@ export default async function NewsPage({ searchParams }: { searchParams: SP }) {
                 {n}
               </span>
             ) : (
-              <Link key={n} href={pageHref(category, n)} className={styles.pageLink}>
+              <a key={n} href={pageHref(category, n)} className={styles.pageLink}>
                 {n}
-              </Link>
+              </a>
             )
           )}
 
-          <Link
+          <a
             href={pageHref(category, page + 1)}
             className={`${styles.pageLink} ${page >= totalPages ? styles.pageDisabled : ''}`}
             aria-label="Next page"
           >
             →
-          </Link>
+          </a>
         </nav>
       )}
     </main>

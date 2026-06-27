@@ -35,6 +35,17 @@ function isActive(href: string, pathname: string, category: string | null): bool
 
 // Center links. Split out because it reads the query string
 // (useSearchParams), which must sit inside a <Suspense> boundary.
+function NavItem({ href, label, active }: { href: string; label: string; active: boolean }) {
+  // Category links (/news?category=…) use a plain <a> so switching between
+  // them always re-renders fresh and updates the active highlight. Other
+  // links keep fast client-side navigation.
+  const cls = active ? 'active' : undefined;
+  if (href.includes('?category=')) {
+    return <a href={href} className={cls}>{label}</a>;
+  }
+  return <Link href={href} className={cls}>{label}</Link>;
+}
+
 function CenterLinks() {
   const pathname = usePathname();
   const category = useSearchParams().get('category');
@@ -42,9 +53,7 @@ function CenterLinks() {
     <>
       {NAV_LINKS.map((l) => (
         <li key={l.label}>
-          <Link href={l.href} className={isActive(l.href, pathname, category) ? 'active' : undefined}>
-            {l.label}
-          </Link>
+          <NavItem href={l.href} label={l.label} active={isActive(l.href, pathname, category)} />
         </li>
       ))}
     </>
@@ -58,9 +67,7 @@ function CenterLinksFallback() {
     <>
       {NAV_LINKS.map((l) => (
         <li key={l.label}>
-          <Link href={l.href} className={isActive(l.href, pathname, null) ? 'active' : undefined}>
-            {l.label}
-          </Link>
+          <NavItem href={l.href} label={l.label} active={isActive(l.href, pathname, null)} />
         </li>
       ))}
     </>
