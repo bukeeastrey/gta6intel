@@ -25,13 +25,13 @@ const ANSWERS: Record<string, string> = {
   'map size':
     'The GTA VI map spans all of <strong>Leonida State</strong> — confirmed by Rockstar as the largest in series history. Vice City sits within the state as its major urban center.',
   'pre-order':
-    'Pre-orders are open now. <strong>Standard Edition: $69.99</strong> · <strong>Premium Edition: $99.99</strong> — includes Leonida Pass and 3-day early access from November 16.',
+    'Pre-orders are open now. <strong>Standard Edition: $79.99</strong> · <strong>Premium Edition: $99.99</strong> — includes Leonida Pass and 3-day early access from November 16.',
   'pc version':
     '<strong>Not officially confirmed</strong> by Rockstar. Multiple sources suggest Q2 2027, approximately 6 months after the console launch.',
   characters:
     'GTA VI features <strong>Jason and Lucia</strong> as dual protagonists — the first time in the series. Both confirmed by Rockstar with official artwork.',
   price:
-    "<strong>Standard: $69.99</strong> · <strong>Premium: $99.99</strong> · Collector's Edition pricing TBA. These are US prices — regional pricing varies.",
+    "<strong>Standard: $79.99</strong> · <strong>Premium: $99.99</strong> · Collector's Edition pricing TBA. These are US prices — regional pricing varies.",
 };
 
 function Overlay({

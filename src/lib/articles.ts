@@ -10,7 +10,7 @@ import type { Article, ArticleCategory } from './types';
 
 // Columns that exist in the `articles` table (list view).
 const COLUMNS =
-  'id, slug, title, summary, image_url, published_at, created_at, source_name, label';
+  'id, slug, title, summary, image_url, published_at, created_at, source_name, label, featured';
 // Extra columns only needed on the full article page.
 const FULL_COLUMNS = `${COLUMNS}, body, source_url`;
 
@@ -49,7 +49,7 @@ function toArticle(r: Record<string, unknown>): Article {
     image_url: (r.image_url as string) ?? null,
     image_alt: null, // not stored → components fall back to the title
     ghost_text: null,
-    featured: false,
+    featured: Boolean(r.featured),
     published_at: (r.published_at as string) ?? (r.created_at as string),
   };
 }
@@ -92,6 +92,24 @@ export async function getLatestArticles(limit = 9): Promise<Article[]> {
 
   if (error) {
     console.error('[getLatestArticles]', error.message);
+    return [];
+  }
+  return (data ?? []).map(toArticle);
+}
+
+/** "Trending / Hot" row: articles you've flagged featured in /admin. */
+export async function getHotArticles(limit = 4): Promise<Article[]> {
+  const supabase = createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from('articles')
+    .select(COLUMNS)
+    .eq('is_published', true)
+    .eq('featured', true)
+    .order('published_at', { ascending: false, nullsFirst: false })
+    .limit(limit);
+
+  if (error) {
+    console.error('[getHotArticles]', error.message);
     return [];
   }
   return (data ?? []).map(toArticle);

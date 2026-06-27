@@ -6,7 +6,7 @@
 const ITEMS = [
   { tag: 'Confirmed', text: 'GTA VI Pre-Orders Now Open' },
   { tag: 'Confirmed', text: 'Launch November 19, 2026' },
-  { tag: 'Confirmed', text: 'Standard $69.99 · Premium $99.99' },
+  { tag: 'Confirmed', text: 'Standard $79.99 · Premium $99.99' },
   { tag: 'Intel', text: 'PC Version Targeting Q2 2027' },
   { tag: 'Confirmed', text: 'Dual Protagonists Jason & Lucia' },
 ];

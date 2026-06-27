@@ -7,7 +7,7 @@
 //   • Leaderboard ad below the hero (desktop), WebSite + ItemList JSON-LD
 // ════════════════════════════════════════════════════════════
 import Link from 'next/link';
-import { getFeaturedArticles, getLatestArticles } from '@/lib/articles';
+import { getFeaturedArticles, getLatestArticles, getHotArticles } from '@/lib/articles';
 import { HeroSlider } from '@/components/home/HeroSlider';
 import { NewsGrid } from '@/components/home/NewsGrid';
 import { SocialFollow, BandMarquee, FutureSection } from '@/components/home/HomeSections';
@@ -20,9 +20,10 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gta6intel-gg.com';
 
 export default async function HomePage() {
   // Fetch in parallel to keep TTFB low.
-  const [featured, latest] = await Promise.all([
+  const [featured, latest, hot] = await Promise.all([
     getFeaturedArticles(4),
     getLatestArticles(9),
+    getHotArticles(4),
   ]);
 
   // Structured data: site search + the latest-intel list.
@@ -72,6 +73,18 @@ export default async function HomePage() {
       {/* SOCIAL STRIP + MARQUEE */}
       <SocialFollow />
       <BandMarquee />
+
+      {/* TRENDING / HOT — articles flagged in /admin (only shows if any) */}
+      {hot.length > 0 && (
+        <>
+          <div className="section-header">
+            <h2 className="section-title rl">
+              🔥 Trending <span>Now</span>
+            </h2>
+          </div>
+          <NewsGrid articles={hot} />
+        </>
+      )}
 
       {/* LATEST INTEL */}
       <div className="section-header">
