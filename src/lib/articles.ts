@@ -125,7 +125,12 @@ export async function getArticlesPage(opts: {
   const labels = opts.category
     ? FILTER_TO_LABELS[opts.category.toLowerCase()]
     : undefined;
-  if (labels) q = q.in('label', labels);
+  // Case-insensitive match: the DB may store labels as 'ANALYSIS',
+  // 'Analysis', or 'analysis'. ilike (no wildcards) matches any case,
+  // so the filters work regardless of how the pipeline saved them.
+  if (labels && labels.length) {
+    q = q.or(labels.map((l) => `label.ilike.${l}`).join(','));
+  }
 
   const { data, error, count } = await q
     .order('published_at', { ascending: false, nullsFirst: false })

@@ -85,16 +85,23 @@ export function Modals() {
 
   // ── Newsletter subscribe state ──
   const [email, setEmail] = useState('');
-  const [subStatus, setSubStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle');
+  const [subStatus, setSubStatus] = useState<'idle' | 'loading' | 'done' | 'error' | 'invalid'>('idle');
 
   async function subscribe() {
-    if (!email || subStatus === 'loading') return;
+    if (subStatus === 'loading') return;
+    // Validate the email before hitting the server so the user gets a
+    // clear message instead of a generic failure.
+    const clean = email.trim();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(clean)) {
+      setSubStatus('invalid');
+      return;
+    }
     setSubStatus('loading');
     try {
       const res = await fetch('/api/newsletter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email: clean }),
       });
       setSubStatus(res.ok ? 'done' : 'error');
       if (res.ok) setEmail('');
@@ -168,9 +175,14 @@ export function Modals() {
                 className="f-inp"
                 placeholder="your@email.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => { setEmail(e.target.value); if (subStatus !== 'idle') setSubStatus('idle'); }}
                 onKeyDown={(e) => e.key === 'Enter' && subscribe()}
               />
+              {subStatus === 'invalid' && (
+                <p style={{ fontSize: 13, color: '#c0392b', marginTop: 8 }}>
+                  Please enter a valid email address (e.g. you@example.com).
+                </p>
+              )}
               {subStatus === 'error' && (
                 <p style={{ fontSize: 13, color: '#c0392b', marginTop: 8 }}>
                   Something went wrong — please try again.
