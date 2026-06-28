@@ -168,7 +168,11 @@ export default function AdminPage() {
     <div style={S.page}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
         <h1 style={{ fontSize: 26 }}>Newsroom</h1>
-        <button style={S.ghost} onClick={() => { sessionStorage.removeItem(PW_KEY); setAuthed(false); setPw(''); }}>Log out</button>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <a style={{ ...S.ghost, textDecoration: 'none' }} href="/admin/database">🗂️ Database</a>
+          <a style={{ ...S.ghost, textDecoration: 'none' }} href="/admin/archive">🖼️ Media</a>
+          <button style={S.ghost} onClick={() => { sessionStorage.removeItem(PW_KEY); setAuthed(false); setPw(''); }}>Log out</button>
+        </div>
       </div>
 
       {/* Summary bar */}

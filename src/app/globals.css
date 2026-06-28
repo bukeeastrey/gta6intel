@@ -70,6 +70,8 @@ body {
 
 /* Center links */
 .nav-links { display: flex; align-items: center; gap: 0; list-style: none; }
+.nav-links > li { display: flex; align-items: center; }
+.nav-links > li > a, .nav-links .nav-news-trigger { display: inline-flex; align-items: center; line-height: 1; }
 .nav-links a {
   text-decoration: none; font-size: 13px; font-weight: 600; letter-spacing: 0.2px;
   color: rgba(255,255,255,0.72);
@@ -1021,3 +1023,19 @@ body, .nl-input, .ai-inp, .f-inp { font-family: var(--font-stack-inter); }
 .news-dropdown li { display: block; }
 .news-dropdown a { display: block; padding: 9px 12px; border-radius: 6px; text-decoration: none; color: var(--ink-mid); font-size: 13px; font-weight: 600; }
 .news-dropdown a:hover { background: var(--orange-dim); color: var(--orange); }
+
+/* ── Streams hub ── */
+.streams-empty { background: var(--white); border: 1px solid var(--border-drk); border-radius: var(--r); padding: 26px; color: var(--ink-soft); }
+.streams-empty code { background: var(--orange-dim); color: var(--orange); padding: 1px 6px; border-radius: 5px; font-size: 13px; }
+.stream-player-wrap { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; border-radius: var(--r); overflow: hidden; margin-bottom: 18px; border: 1px solid var(--border-drk); }
+.stream-player { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.stream-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+.stream-card { text-align: left; padding: 0; background: var(--white); border: 1px solid var(--border-drk); border-radius: var(--r); overflow: hidden; cursor: pointer; transition: transform .15s, border-color .15s; }
+.stream-card:hover { transform: translateY(-2px); }
+.stream-card.on { border-color: var(--orange); box-shadow: 0 0 0 2px var(--orange-glow); }
+.stream-thumb { position: relative; aspect-ratio: 16/9; background-size: cover; background-position: center; background-color: #1a1a26; }
+.stream-live { position: absolute; top: 8px; left: 8px; background: #e0143c; color: #fff; font-size: 10px; font-weight: 900; letter-spacing: .04em; padding: 3px 8px; border-radius: 5px; }
+.stream-viewers { position: absolute; bottom: 8px; left: 8px; background: rgba(0,0,0,.75); color: #fff; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 5px; }
+.stream-meta { padding: 10px 12px; }
+.stream-streamer { font-weight: 800; color: var(--ink); font-size: 14px; }
+.stream-title { color: var(--ink-soft); font-size: 12.5px; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
