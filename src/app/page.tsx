@@ -8,8 +8,10 @@
 // ════════════════════════════════════════════════════════════
 import Link from 'next/link';
 import { getFeaturedArticles, getLatestArticles, getHotArticles } from '@/lib/articles';
+import { getDatabaseCategories } from '@/lib/database';
 import { HeroSlider } from '@/components/home/HeroSlider';
 import { NewsGrid } from '@/components/home/NewsGrid';
+import { CategoryTiles } from '@/components/database/CategoryTiles';
 import { SocialFollow, BandMarquee, FutureSection } from '@/components/home/HomeSections';
 import { AdSlot } from '@/components/ui/AdSlot';
 
@@ -20,10 +22,11 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gta6intel-gg.com';
 
 export default async function HomePage() {
   // Fetch in parallel to keep TTFB low.
-  const [featured, latest, hot] = await Promise.all([
+  const [featured, latest, hot, dbCategories] = await Promise.all([
     getFeaturedArticles(4),
-    getLatestArticles(9),
-    getHotArticles(4),
+    getLatestArticles(6), // trimmed: full list lives behind "View All"
+    getHotArticles(3),
+    getDatabaseCategories(),
   ]);
 
   // Structured data: site search + the latest-intel list.
@@ -74,6 +77,17 @@ export default async function HomePage() {
       <SocialFollow />
       <BandMarquee />
 
+      {/* GTA 6 DATABASE — image tiles + counts (evergreen reference hub) */}
+      <div className="section-header">
+        <h2 className="section-title rl">
+          GTA 6 <span>Database</span>
+        </h2>
+        <Link href="/database" className="section-link rr">Explore All →</Link>
+      </div>
+      <div className="home-db-tiles">
+        <CategoryTiles categories={dbCategories} />
+      </div>
+
       {/* TRENDING / HOT — articles flagged in /admin (only shows if any) */}
       {hot.length > 0 && (
         <>
@@ -86,7 +100,7 @@ export default async function HomePage() {
         </>
       )}
 
-      {/* LATEST INTEL */}
+      {/* LATEST INTEL (trimmed — full feed behind View All) */}
       <div className="section-header">
         <h2 className="section-title rl">
           Latest <span>Intel</span>

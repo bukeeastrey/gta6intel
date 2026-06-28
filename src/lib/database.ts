@@ -40,10 +40,11 @@ export interface DbCategoryMeta {
   emoji: string;
   blurb: string;
   count: number;
+  cover: string | null;
 }
 
 // Display order + metadata for every supported category.
-export const DB_CATEGORIES: Omit<DbCategoryMeta, 'count'>[] = [
+export const DB_CATEGORIES: Omit<DbCategoryMeta, 'count' | 'cover'>[] = [
   { key: 'characters', label: 'Characters', emoji: '🎭', blurb: 'Protagonists, rivals and the whole Leonida cast.' },
   { key: 'vehicles',   label: 'Vehicles',   emoji: '🚗', blurb: 'Cars, bikes, boats and aircraft of Vice City.' },
   { key: 'locations',  label: 'Locations',  emoji: '📍', blurb: 'Cities, neighborhoods and landmarks across Leonida.' },
@@ -79,16 +80,23 @@ function toEntry(r: Record<string, unknown>): DbEntry {
   };
 }
 
-/** Category hub: every category with its live entry count. */
+/** Category hub: every category with its live entry count + a cover image. */
 export async function getDatabaseCategories(): Promise<DbCategoryMeta[]> {
   const supabase = createSupabaseServerClient();
   const { data, error } = await supabase
     .from('database_entries')
-    .select('category')
+    .select('category, image_url, popular')
     .eq('is_published', true);
   const counts: Record<string, number> = {};
-  if (!error && data) for (const row of data) counts[row.category] = (counts[row.category] ?? 0) + 1;
-  return DB_CATEGORIES.map((c) => ({ ...c, count: counts[c.key] ?? 0 }));
+  const covers: Record<string, string> = {};
+  if (!error && data) {
+    for (const row of data) {
+      counts[row.category] = (counts[row.category] ?? 0) + 1;
+      // Prefer a popular entry's image as the cover; else first available.
+      if (row.image_url && (!covers[row.category] || row.popular)) covers[row.category] = row.image_url as string;
+    }
+  }
+  return DB_CATEGORIES.map((c) => ({ ...c, count: counts[c.key] ?? 0, cover: covers[c.key] ?? null }));
 }
 
 /** All entries in a category (newest-feeling: popular first, then name). */

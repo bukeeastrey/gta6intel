@@ -3,8 +3,8 @@
 // live entry counts. Evergreen, high-intent SEO landing page.
 // ════════════════════════════════════════════════════════════
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { getDatabaseCategories } from '@/lib/database';
+import { CategoryTiles } from '@/components/database/CategoryTiles';
 
 export const revalidate = 300;
 
@@ -38,18 +38,7 @@ export default async function DatabaseHub() {
         </p>
       </div>
 
-      <div className="db-cat-grid">
-        {categories.map((c) => (
-          <Link key={c.key} href={`/database/${c.key}`} className="db-cat-card">
-            <div className="db-cat-emoji">{c.emoji}</div>
-            <div className="db-cat-body">
-              <div className="db-cat-name">{c.label}</div>
-              <div className="db-cat-blurb">{c.blurb}</div>
-            </div>
-            <div className="db-cat-count">{c.count > 0 ? c.count : '—'}</div>
-          </Link>
-        ))}
-      </div>
+      <CategoryTiles categories={categories} />
     </main>
   );
 }

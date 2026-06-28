@@ -11,14 +11,19 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { useUi } from './UiProvider';
 
+// Top-level simple links (order: All, [News dropdown], Database, Videos).
 const NAV_LINKS = [
   { label: 'All', href: '/' },
+  { label: 'Database', href: '/database' },
+  { label: 'Videos', href: '/videos' },
+];
+
+// Items inside the "News" dropdown.
+const NEWS_LINKS = [
+  { label: 'All News', href: '/news' },
   { label: 'Confirmed', href: '/news?category=confirmed' },
   { label: 'Intel', href: '/news?category=intel' },
   { label: 'Analysis', href: '/news?category=analysis' },
-  { label: 'Database', href: '/database' },
-  { label: 'Videos', href: '/videos' },
-  { label: 'Guides', href: '/guides' },
 ];
 
 // Is a given nav link the one matching the current URL?
@@ -47,12 +52,35 @@ function NavItem({ href, label, active }: { href: string; label: string; active:
   return <Link href={href} className={cls}>{label}</Link>;
 }
 
+// Hover "News" dropdown holding the category filters.
+function NewsDropdown({ pathname, active }: { pathname: string; active: boolean }) {
+  return (
+    <li className="nav-news">
+      <span className={`nav-news-trigger ${active ? 'active' : ''}`}>News ▾</span>
+      <ul className="news-dropdown">
+        {NEWS_LINKS.map((l) => (
+          <li key={l.label}>
+            {l.href.includes('?category=')
+              ? <a href={l.href}>{l.label}</a>
+              : <Link href={l.href}>{l.label}</Link>}
+          </li>
+        ))}
+      </ul>
+    </li>
+  );
+}
+
 function CenterLinks() {
   const pathname = usePathname();
   const category = useSearchParams().get('category');
+  const newsActive = pathname.startsWith('/news');
+  const all = NAV_LINKS[0];
+  const rest = NAV_LINKS.slice(1);
   return (
     <>
-      {NAV_LINKS.map((l) => (
+      <li><NavItem href={all.href} label={all.label} active={isActive(all.href, pathname, category)} /></li>
+      <NewsDropdown pathname={pathname} active={newsActive} />
+      {rest.map((l) => (
         <li key={l.label}>
           <NavItem href={l.href} label={l.label} active={isActive(l.href, pathname, category)} />
         </li>
@@ -64,9 +92,14 @@ function CenterLinks() {
 // Fallback during prerender: highlight by path only (no query yet).
 function CenterLinksFallback() {
   const pathname = usePathname();
+  const newsActive = pathname.startsWith('/news');
+  const all = NAV_LINKS[0];
+  const rest = NAV_LINKS.slice(1);
   return (
     <>
-      {NAV_LINKS.map((l) => (
+      <li><NavItem href={all.href} label={all.label} active={isActive(all.href, pathname, null)} /></li>
+      <NewsDropdown pathname={pathname} active={newsActive} />
+      {rest.map((l) => (
         <li key={l.label}>
           <NavItem href={l.href} label={l.label} active={isActive(l.href, pathname, null)} />
         </li>
@@ -142,6 +175,7 @@ export function Navbar() {
               <span className="dd-ic">🤖</span>Ask GTA6 AI
             </button>
             <Link href="/connect"><span className="dd-ic">🎮</span>Connect Your Game</Link>
+            <Link href="/guides"><span className="dd-ic">📚</span>Guides</Link>
             <a href="https://discord.gg/G9m5w78N9" target="_blank" rel="noopener noreferrer"><span className="dd-ic">💬</span>Join Discord</a>
             <Link href="/newsletter"><span className="dd-ic">📧</span>Newsletter</Link>
             <a href="/rss.xml"><span className="dd-ic">📰</span>RSS Feed</a>
