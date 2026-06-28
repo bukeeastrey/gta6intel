@@ -9,6 +9,20 @@ export const dynamic = 'force-dynamic';
 const LABELS = ['CONFIRMED', 'RUMOR', 'LEAK', 'ANALYSIS'];
 const CATEGORIES = ['news', 'analysis', 'guide', 'roundup'];
 
+// GET one article WITH its full body (for preview / editing).
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  if (!isAdmin(req)) return unauthorized();
+  const { id } = await params;
+  const supabase = createSupabaseAdminClient();
+  const { data, error } = await supabase
+    .from('articles')
+    .select('id, title, slug, summary, body, label, category, image_url, source_name, source_url, is_published, auto_published, featured, published_at, created_at')
+    .eq('id', id)
+    .single();
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ ok: true, article: data });
+}
+
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   if (!isAdmin(req)) return unauthorized();
   const { id } = await params;

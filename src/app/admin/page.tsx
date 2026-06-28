@@ -43,6 +43,22 @@ export default function AdminPage() {
   const [form, setForm] = useState({ ...empty });
   const [editingId, setEditingId] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [previewId, setPreviewId] = useState<string | null>(null);
+  const [previewBody, setPreviewBody] = useState('');
+
+  // Fetch one article's full body (list endpoint omits body to stay fast).
+  async function fetchBody(id: string): Promise<string> {
+    const res = await fetch(`/api/admin/articles/${id}`, { headers: headers() });
+    if (!res.ok) return '';
+    const d = await res.json();
+    return d.article?.body || '';
+  }
+
+  async function togglePreview(id: string) {
+    if (previewId === id) { setPreviewId(null); setPreviewBody(''); return; }
+    setPreviewId(id); setPreviewBody('Loading…');
+    setPreviewBody(await fetchBody(id) || '(no body)');
+  }
 
   async function uploadImage(file: File) {
     setUploading(true); setMsg('');
@@ -78,10 +94,11 @@ export default function AdminPage() {
       const res = await fetch('/api/admin/articles', { headers: headers() });
       if (res.status === 401) { setMsg('Wrong password.'); setAuthed(false); sessionStorage.removeItem(PW_KEY); return; }
       const data = await res.json();
+      if (!res.ok) { setMsg(data.error || `Load failed (${res.status}).`); setAuthed(true); return; }
       setRows(data.articles || []);
       setAuthed(true);
       sessionStorage.setItem(PW_KEY, pw);
-    } catch { setMsg('Could not load.'); }
+    } catch { setMsg('Could not load — check your connection.'); }
     finally { setLoading(false); }
   }, [headers, pw]);
 
@@ -106,14 +123,16 @@ export default function AdminPage() {
     if (res.ok) { setForm({ ...empty }); setEditingId(null); setMsg(editingId ? 'Saved.' : 'Created.'); load(); }
     else { const d = await res.json().catch(() => ({})); setMsg(d.error || 'Save failed.'); }
   }
-  function edit(r: Row) {
+  async function edit(r: Row) {
     setEditingId(r.id);
+    setMsg('Loading article…');
+    const body = await fetchBody(r.id);
     setForm({
-      title: r.title, summary: r.summary || '', body: '', label: r.label || 'CONFIRMED',
+      title: r.title, summary: r.summary || '', body, label: r.label || 'CONFIRMED',
       category: r.category || 'news', image_url: r.image_url || '', source_name: r.source_name || 'GTA6Intel',
       source_url: r.source_url || '', featured: r.featured, is_published: r.is_published,
     });
-    setMsg('Editing — note: leave Body empty to keep the existing body unchanged.');
+    setMsg('Editing — the full body is loaded below; change it or leave as-is, then Save.');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -142,11 +161,25 @@ export default function AdminPage() {
     );
   }
 
+  const publishedCount = rows.filter((r) => r.is_published).length;
+  const draftCount = rows.length - publishedCount;
+
   return (
     <div style={S.page}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
         <h1 style={{ fontSize: 26 }}>Newsroom</h1>
         <button style={S.ghost} onClick={() => { sessionStorage.removeItem(PW_KEY); setAuthed(false); setPw(''); }}>Log out</button>
+      </div>
+
+      {/* Summary bar */}
+      <div style={{ display: 'flex', gap: 16, alignItems: 'center', marginBottom: 20, flexWrap: 'wrap' }}>
+        <span style={{ fontSize: 14, color: '#9a9ab8' }}>
+          <strong style={{ color: '#e2e2f0' }}>{rows.length}</strong> articles ·{' '}
+          <strong style={{ color: '#6ee7a0' }}>{publishedCount}</strong> published ·{' '}
+          <strong style={{ color: '#ffb37a' }}>{draftCount}</strong> drafts
+        </span>
+        <button style={S.ghost} onClick={load} disabled={loading}>{loading ? 'Loading…' : '↻ Refresh'}</button>
+        {draftCount > 0 && <span style={{ fontSize: 13, color: '#ffb37a' }}>↓ drafts await your review below</span>}
       </div>
 
       {/* ── Create / Edit form ── */}
@@ -209,13 +242,19 @@ export default function AdminPage() {
               <div style={{ fontSize: 12, color: '#5a5a78', marginTop: 2 }}>{r.source_name} · {new Date(r.created_at).toLocaleDateString()}</div>
             </div>
             <div style={{ display: 'flex', gap: 6, alignItems: 'flex-start', flexWrap: 'wrap' }}>
+              <button style={S.ghost} onClick={() => togglePreview(r.id)}>{previewId === r.id ? 'Hide' : 'Preview'}</button>
               <button style={S.ghost} onClick={() => patch(r.id, { is_published: !r.is_published })}>{r.is_published ? 'Unpublish' : 'Publish'}</button>
               <button style={S.ghost} onClick={() => patch(r.id, { featured: !r.featured })}>{r.featured ? 'Un-hot' : '🔥 Hot'}</button>
-              <a style={{ ...S.ghost, textDecoration: 'none' }} href={`/news/${r.slug}`} target="_blank" rel="noreferrer">View</a>
+              {r.is_published && <a style={{ ...S.ghost, textDecoration: 'none' }} href={`/news/${r.slug}`} target="_blank" rel="noreferrer">View live</a>}
               <button style={S.ghost} onClick={() => edit(r)}>Edit</button>
               <button style={{ ...S.ghost, color: '#ff9b9b' }} onClick={() => del(r.id)}>Delete</button>
             </div>
           </div>
+          {previewId === r.id && (
+            <div style={{ marginTop: 12, padding: 14, background: 'var(--bg, #080810)', border: '1px solid #1e1e35', borderRadius: 8, whiteSpace: 'pre-wrap', fontSize: 14, lineHeight: 1.6, color: '#c9c9e0', maxHeight: 360, overflowY: 'auto' }}>
+              {previewBody}
+            </div>
+          )}
         </div>
       ))}
     </div>
