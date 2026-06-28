@@ -31,11 +31,6 @@ export default async function DatabaseHub() {
       <div className="db-head">
         <span className="db-kicker">— COMMUNITY RESEARCH</span>
         <h1 className="db-h1">GTA 6 <span className="orange">Database</span></h1>
-        <p className="db-lead">
-          The most rigorous GTA 6 reference anywhere. Every entry is broken down field by field — and
-          every field is labeled <b className="st-c">Confirmed</b>, <b className="st-r">Rumor</b> or{' '}
-          <b className="st-l">Leak</b>, so you always know what&apos;s real.
-        </p>
       </div>
 
       <CategoryTiles categories={categories} />

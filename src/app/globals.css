@@ -1005,7 +1005,17 @@ body, .nl-input, .ai-inp, .f-inp { font-family: var(--font-stack-inter); }
 
 /* ── News hover dropdown in the nav ── */
 .nav-news { position: relative; }
-.nav-news-trigger { cursor: pointer; }
+.nav-links .nav-news-trigger {
+  display: inline-block; text-decoration: none; font-size: 13px; font-weight: 600; letter-spacing: 0.2px;
+  color: rgba(255,255,255,0.82);
+  padding: 8px 14px; border-radius: var(--r-pill);
+  transition: all 0.18s; white-space: nowrap; cursor: pointer;
+}
+.nav.scrolled .nav-links .nav-news-trigger { color: var(--ink-soft); }
+.nav-links .nav-news-trigger:hover { color: #fff; background: rgba(255,255,255,0.12); }
+.nav.scrolled .nav-links .nav-news-trigger:hover { color: var(--orange); background: var(--orange-dim); }
+.nav-news-trigger.active { color: var(--orange); font-weight: 700; }
+.nav.scrolled .nav-news-trigger.active { color: var(--orange); }
 .news-dropdown { position: absolute; top: 100%; left: 0; min-width: 170px; background: var(--white); border: 1px solid var(--border-drk); border-radius: var(--r-sm); padding: 6px; list-style: none; margin: 8px 0 0; box-shadow: 0 12px 30px rgba(0,0,0,.12); opacity: 0; visibility: hidden; transform: translateY(-6px); transition: opacity .15s, transform .15s, visibility .15s; z-index: 60; }
 .nav-news:hover .news-dropdown { opacity: 1; visibility: visible; transform: none; }
 .news-dropdown li { display: block; }
