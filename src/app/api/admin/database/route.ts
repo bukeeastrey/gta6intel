@@ -41,6 +41,7 @@ export async function POST(req: Request) {
         status: typeof b.status === 'string' ? b.status : 'confirmed',
         gallery: Array.isArray(b.gallery) ? b.gallery : [],
         video_url: b.video_url || null,
+        videos: Array.isArray(b.videos) ? b.videos : [],
         popular: Boolean(b.popular),
         is_published: b.is_published !== false,
       })

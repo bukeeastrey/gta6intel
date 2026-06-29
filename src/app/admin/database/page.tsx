@@ -15,7 +15,7 @@ interface Row { id: string; slug: string; category: string; name: string; subtit
 const empty = {
   category: 'characters', name: '', subtitle: '', summary: '', body: '',
   image_url: '', popular: false, is_published: true,
-  status: 'confirmed', video_url: '', gallery: [] as string[],
+  status: 'confirmed', video_url: '', gallery: [] as string[], videos: [] as string[],
   attributes: [] as Attr[], related: [] as Related[],
 };
 
@@ -29,6 +29,7 @@ export default function DatabaseAdmin() {
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [filter, setFilter] = useState('all');
+  const [dragIdx, setDragIdx] = useState<number | null>(null);
 
   useEffect(() => { const s = typeof window !== 'undefined' ? sessionStorage.getItem(PW_KEY) : null; if (s) { setPw(s); setAuthed(true); } }, []);
   const headers = useCallback(() => ({ 'Content-Type': 'application/json', 'x-admin-password': pw }), [pw]);
@@ -56,22 +57,38 @@ export default function DatabaseAdmin() {
     } catch { setMsg('Upload failed.'); } finally { setUploading(false); }
   }
 
-  async function uploadGallery(file: File) {
+  async function uploadGalleryMany(files: FileList) {
     setUploading(true); setMsg('');
     try {
-      const fd = new FormData(); fd.append('file', file);
-      const res = await fetch('/api/admin/upload', { method: 'POST', headers: { 'x-admin-password': pw }, body: fd });
-      const d = await res.json();
-      if (res.ok && d.url) { setForm((f) => ({ ...f, gallery: [...f.gallery, d.url] })); setMsg('Added to gallery.'); }
-      else setMsg(d.error || 'Upload failed.');
+      const urls: string[] = [];
+      for (const file of Array.from(files)) {
+        const fd = new FormData(); fd.append('file', file);
+        const res = await fetch('/api/admin/upload', { method: 'POST', headers: { 'x-admin-password': pw }, body: fd });
+        const d = await res.json();
+        if (res.ok && d.url) urls.push(d.url);
+        else { setMsg(d.error || `Upload failed on ${file.name}.`); break; }
+      }
+      if (urls.length) {
+        setForm((f) => ({ ...f, gallery: [...f.gallery, ...urls] }));
+        setMsg(`Added ${urls.length} image${urls.length > 1 ? 's' : ''} to gallery.`);
+      }
     } catch { setMsg('Upload failed.'); } finally { setUploading(false); }
   }
   const removeGallery = (i: number) => setForm((f) => ({ ...f, gallery: f.gallery.filter((_, j) => j !== i) }));
+  const moveGallery = (from: number, to: number) => setForm((f) => {
+    if (to < 0 || to >= f.gallery.length || from === to) return f;
+    const g = [...f.gallery]; const [x] = g.splice(from, 1); g.splice(to, 0, x); return { ...f, gallery: g };
+  });
+
+  // additional video embeds (YouTube URLs — no file hosting)
+  const addVideo = () => setForm((f) => ({ ...f, videos: [...f.videos, ''] }));
+  const setVideo = (i: number, v: string) => setForm((f) => ({ ...f, videos: f.videos.map((u, j) => j === i ? v : u) }));
+  const delVideo = (i: number) => setForm((f) => ({ ...f, videos: f.videos.filter((_, j) => j !== i) }));
 
   async function save() {
     if (!form.name.trim()) { setMsg('Name is required.'); return; }
     // strip 'none' status to null before saving
-    const payload = { ...form, attributes: form.attributes.map((a) => ({ ...a, status: a.status === 'none' ? null : a.status, href: a.href || undefined })) };
+    const payload = { ...form, videos: form.videos.map((s) => s.trim()).filter(Boolean), attributes: form.attributes.map((a) => ({ ...a, status: a.status === 'none' ? null : a.status, href: a.href || undefined })) };
     setLoading(true);
     const url = editingId ? `/api/admin/database/${editingId}` : '/api/admin/database';
     const res = await fetch(url, { method: editingId ? 'PATCH' : 'POST', headers: headers(), body: JSON.stringify(payload) });
@@ -91,6 +108,7 @@ export default function DatabaseAdmin() {
       category: e.category, name: e.name, subtitle: e.subtitle || '', summary: e.summary || '',
       body: e.body || '', image_url: e.image_url || '', popular: !!e.popular, is_published: !!e.is_published,
       status: e.status || 'confirmed', video_url: e.video_url || '', gallery: Array.isArray(e.gallery) ? e.gallery : [],
+      videos: Array.isArray(e.videos) ? e.videos : [],
       attributes: (e.attributes || []).map((a: Attr) => ({ label: a.label || '', value: a.value || '', status: a.status || 'none', href: a.href || '' })),
       related: e.related || [],
     });
@@ -174,20 +192,50 @@ export default function DatabaseAdmin() {
         <div style={{ margin: '10px 0' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
             <strong style={{ fontSize: 13, color: '#9a9ab8' }}>GALLERY ({form.gallery.length} images)</strong>
-            <label style={{ ...S.ghost, whiteSpace: 'nowrap', opacity: uploading ? .6 : 1 }}>{uploading ? 'Uploading…' : '⬆ Add image'}
-              <input type="file" accept="image/*" style={{ display: 'none' }} disabled={uploading} onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadGallery(f); e.target.value = ''; }} />
+            <label style={{ ...S.ghost, whiteSpace: 'nowrap', opacity: uploading ? .6 : 1 }}>{uploading ? 'Uploading…' : '⬆ Add images'}
+              <input type="file" accept="image/*" multiple style={{ display: 'none' }} disabled={uploading} onChange={(e) => { const fs = e.target.files; if (fs && fs.length) uploadGalleryMany(fs); e.target.value = ''; }} />
             </label>
           </div>
           {form.gallery.length > 0 && (
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-              {form.gallery.map((src, i) => (
-                <div key={i} style={{ position: 'relative' }}>
-                  <img src={src} alt="" style={{ width: 80, height: 60, objectFit: 'cover', borderRadius: 6, border: '1px solid #1e1e35' }} />
-                  <button onClick={() => removeGallery(i)} style={{ position: 'absolute', top: -6, right: -6, background: '#b3261e', color: '#fff', border: 'none', borderRadius: '50%', width: 20, height: 20, cursor: 'pointer', fontSize: 11 }}>✕</button>
-                </div>
-              ))}
-            </div>
+            <>
+              <div style={{ fontSize: 11, color: '#5a5a78', marginBottom: 6 }}>Drag to reorder, or use ‹ ›. First image is the gallery lead.</div>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                {form.gallery.map((src, i) => (
+                  <div
+                    key={i}
+                    draggable
+                    onDragStart={() => setDragIdx(i)}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={() => { if (dragIdx !== null) moveGallery(dragIdx, i); setDragIdx(null); }}
+                    style={{ position: 'relative', cursor: 'grab', opacity: dragIdx === i ? 0.4 : 1 }}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={src} alt="" style={{ width: 84, height: 62, objectFit: 'cover', borderRadius: 6, border: '1px solid #1e1e35', display: 'block' }} />
+                    <button onClick={() => removeGallery(i)} title="Remove" style={{ position: 'absolute', top: -6, right: -6, background: '#b3261e', color: '#fff', border: 'none', borderRadius: '50%', width: 20, height: 20, cursor: 'pointer', fontSize: 11 }}>✕</button>
+                    <div style={{ position: 'absolute', bottom: 2, left: 2, right: 2, display: 'flex', justifyContent: 'space-between' }}>
+                      <button onClick={() => moveGallery(i, i - 1)} disabled={i === 0} title="Move left" style={{ background: 'rgba(0,0,0,.6)', color: '#fff', border: 'none', borderRadius: 4, width: 18, height: 18, cursor: i === 0 ? 'default' : 'pointer', fontSize: 11, opacity: i === 0 ? .3 : 1 }}>‹</button>
+                      <button onClick={() => moveGallery(i, i + 1)} disabled={i === form.gallery.length - 1} title="Move right" style={{ background: 'rgba(0,0,0,.6)', color: '#fff', border: 'none', borderRadius: 4, width: 18, height: 18, cursor: i === form.gallery.length - 1 ? 'default' : 'pointer', fontSize: 11, opacity: i === form.gallery.length - 1 ? .3 : 1 }}>›</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
           )}
+        </div>
+
+        {/* Additional videos (embeds, no file hosting) */}
+        <div style={{ margin: '10px 0' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+            <strong style={{ fontSize: 13, color: '#9a9ab8' }}>MORE VIDEOS (YouTube URLs — embedded, not hosted)</strong>
+            <button style={S.ghost} onClick={addVideo}>+ Add video</button>
+          </div>
+          {form.videos.map((u, i) => (
+            <div key={i} style={{ display: 'flex', gap: 6, marginBottom: 6 }}>
+              <input style={{ ...S.input, marginBottom: 0, flex: 1 }} placeholder="https://www.youtube.com/watch?v=…" value={u} onChange={(e) => setVideo(i, e.target.value)} />
+              <button style={{ ...S.ghost, color: '#ff9b9b' }} onClick={() => delVideo(i)}>✕</button>
+            </div>
+          ))}
+          {form.videos.length === 0 && <div style={{ fontSize: 11, color: '#5a5a78' }}>The single field above is the lead video; add extra trailers/clips here.</div>}
         </div>
 
         {/* Attributes builder */}

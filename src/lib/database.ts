@@ -31,6 +31,7 @@ export interface DbEntry {
   status: string;
   gallery: string[];
   video_url: string | null;
+  videos: string[];
   attributes: DbAttr[];
   related: DbRelated[];
   popular: boolean;
@@ -63,7 +64,7 @@ export function categoryMeta(key: string) {
 }
 
 const COLS =
-  'id, slug, category, name, subtitle, image_url, summary, body, status, gallery, video_url, attributes, related, popular, votes_up, votes_down';
+  'id, slug, category, name, subtitle, image_url, summary, body, status, gallery, video_url, videos, attributes, related, popular, votes_up, votes_down';
 
 function toEntry(r: Record<string, unknown>): DbEntry {
   return {
@@ -78,6 +79,7 @@ function toEntry(r: Record<string, unknown>): DbEntry {
     status: (r.status as string) ?? 'confirmed',
     gallery: Array.isArray(r.gallery) ? (r.gallery as string[]) : [],
     video_url: (r.video_url as string) ?? null,
+    videos: Array.isArray(r.videos) ? (r.videos as string[]) : [],
     attributes: Array.isArray(r.attributes) ? (r.attributes as DbAttr[]) : [],
     related: Array.isArray(r.related) ? (r.related as DbRelated[]) : [],
     popular: Boolean(r.popular),

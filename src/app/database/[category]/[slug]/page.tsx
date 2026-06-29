@@ -103,6 +103,21 @@ export default async function EntryPage({ params }: { params: Params }) {
             </div>
           )}
 
+          {/* Additional video embeds */}
+          {entry.videos.map((v, i) => {
+            const emb = youtubeEmbed(v);
+            return emb ? (
+              <div className="db-entry-video" key={`vid-${i}`}>
+                <iframe
+                  src={emb}
+                  title={`${entry.name} video ${i + 2}`}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
+            ) : null;
+          })}
+
           {/* Image gallery */}
           {entry.gallery.length > 0 && (
             <div className="db-gallery">

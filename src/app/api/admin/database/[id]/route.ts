@@ -27,6 +27,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     if (Array.isArray(b.attributes)) patch.attributes = b.attributes;
     if (Array.isArray(b.related)) patch.related = b.related;
     if (Array.isArray(b.gallery)) patch.gallery = b.gallery;
+    if (Array.isArray(b.videos)) patch.videos = b.videos;
     if (typeof b.popular === 'boolean') patch.popular = b.popular;
     if (typeof b.is_published === 'boolean') patch.is_published = b.is_published;
     const { error } = await supabase.from('database_entries').update(patch).eq('id', id);
