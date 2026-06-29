@@ -38,6 +38,9 @@ export async function POST(req: Request) {
         body: b.body || null,
         attributes: Array.isArray(b.attributes) ? b.attributes : [],
         related: Array.isArray(b.related) ? b.related : [],
+        status: typeof b.status === 'string' ? b.status : 'confirmed',
+        gallery: Array.isArray(b.gallery) ? b.gallery : [],
+        video_url: b.video_url || null,
         popular: Boolean(b.popular),
         is_published: b.is_published !== false,
       })

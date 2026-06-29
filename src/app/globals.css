@@ -1039,3 +1039,15 @@ body, .nl-input, .ai-inp, .f-inp { font-family: var(--font-stack-inter); }
 .stream-meta { padding: 10px 12px; }
 .stream-streamer { font-weight: 800; color: var(--ink); font-size: 14px; }
 .stream-title { color: var(--ink-soft); font-size: 12.5px; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ── Database entry: status badge, video, gallery ── */
+.db-entry-subrow { display: flex; align-items: center; gap: 12px; margin-top: 6px; flex-wrap: wrap; }
+.db-entry-status { font-size: 11px; font-weight: 900; letter-spacing: .05em; padding: 4px 10px; border-radius: 100px; color: #fff; }
+.db-entry-status.st-confirmed { background: var(--confirmed); }
+.db-entry-status.st-rumor { background: var(--intel); }
+.db-entry-status.st-leak { background: var(--analysis); }
+.db-entry-video { position: relative; width: 100%; aspect-ratio: 16/9; margin-top: 16px; border-radius: var(--r); overflow: hidden; border: 1px solid var(--border-drk); background: #000; }
+.db-entry-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.db-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-top: 16px; }
+.db-gallery-img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 10px; border: 1px solid var(--border-drk); cursor: pointer; transition: transform .15s; }
+.db-gallery-img:hover { transform: scale(1.02); }

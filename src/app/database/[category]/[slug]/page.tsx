@@ -10,7 +10,7 @@ import Link from 'next/link';
 import { getEntry, getAllEntryParams, categoryMeta, type DbAttr } from '@/lib/database';
 import { VoteBox } from '@/components/database/VoteBox';
 
-export const revalidate = 300;
+export const revalidate = 60;
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gta6intel-gg.com';
 type Params = Promise<{ category: string; slug: string }>;
@@ -42,8 +42,14 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 }
 
 function StatusTag({ status }: { status: DbAttr['status'] }) {
-  if (!status) return null;
+  // Only flag a field when it's uncertain. Confirmed fields stay clean.
+  if (status !== 'rumor' && status !== 'leak') return null;
   return <span className={`db-attr-st st-${status}`}>{status.toUpperCase()}</span>;
+}
+
+function youtubeEmbed(url: string): string | null {
+  const m = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/);
+  return m ? `https://www.youtube.com/embed/${m[1]}` : null;
 }
 
 export default async function EntryPage({ params }: { params: Params }) {
@@ -72,15 +78,41 @@ export default async function EntryPage({ params }: { params: Params }) {
           <h1 className="db-h1">{entry.name}</h1>
           <VoteBox id={entry.id} up={entry.votes_up} down={entry.votes_down} />
         </div>
-        {entry.subtitle && <div className="db-entry-sub">{entry.subtitle}</div>}
+        <div className="db-entry-subrow">
+          {entry.subtitle && <span className="db-entry-sub">{entry.subtitle}</span>}
+          <span className={`db-entry-status st-${entry.status}`}>{entry.status.toUpperCase()}</span>
+        </div>
       </div>
 
       <div className="db-entry-grid">
-        {/* Left: portrait + bio */}
+        {/* Left: portrait + video + gallery + bio */}
         <div className="db-entry-main">
           <div className="db-entry-img" style={entry.image_url ? { backgroundImage: `url(${entry.image_url})` } : undefined}>
             {!entry.image_url && <span className="db-card-ph big">{entry.name.charAt(0)}</span>}
           </div>
+
+          {/* Video embed (character in motion / location flythrough) */}
+          {entry.video_url && youtubeEmbed(entry.video_url) && (
+            <div className="db-entry-video">
+              <iframe
+                src={youtubeEmbed(entry.video_url) as string}
+                title={`${entry.name} video`}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          )}
+
+          {/* Image gallery */}
+          {entry.gallery.length > 0 && (
+            <div className="db-gallery">
+              {entry.gallery.map((src, i) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img key={i} src={src} alt={`${entry.name} ${i + 1}`} className="db-gallery-img" />
+              ))}
+            </div>
+          )}
+
           {entry.body && (
             <div className="db-entry-body">
               {entry.body.split('\n').filter(Boolean).map((p, i) => (

@@ -21,11 +21,12 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   try {
     const b = await req.json();
     const patch: Record<string, unknown> = { updated_at: new Date().toISOString() };
-    for (const k of ['category','name','subtitle','image_url','summary','body','slug']) {
+    for (const k of ['category','name','subtitle','image_url','summary','body','slug','status','video_url']) {
       if (typeof b[k] === 'string') patch[k] = b[k];
     }
     if (Array.isArray(b.attributes)) patch.attributes = b.attributes;
     if (Array.isArray(b.related)) patch.related = b.related;
+    if (Array.isArray(b.gallery)) patch.gallery = b.gallery;
     if (typeof b.popular === 'boolean') patch.popular = b.popular;
     if (typeof b.is_published === 'boolean') patch.is_published = b.is_published;
     const { error } = await supabase.from('database_entries').update(patch).eq('id', id);

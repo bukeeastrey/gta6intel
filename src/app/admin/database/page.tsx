@@ -15,6 +15,7 @@ interface Row { id: string; slug: string; category: string; name: string; subtit
 const empty = {
   category: 'characters', name: '', subtitle: '', summary: '', body: '',
   image_url: '', popular: false, is_published: true,
+  status: 'confirmed', video_url: '', gallery: [] as string[],
   attributes: [] as Attr[], related: [] as Related[],
 };
 
@@ -55,6 +56,18 @@ export default function DatabaseAdmin() {
     } catch { setMsg('Upload failed.'); } finally { setUploading(false); }
   }
 
+  async function uploadGallery(file: File) {
+    setUploading(true); setMsg('');
+    try {
+      const fd = new FormData(); fd.append('file', file);
+      const res = await fetch('/api/admin/upload', { method: 'POST', headers: { 'x-admin-password': pw }, body: fd });
+      const d = await res.json();
+      if (res.ok && d.url) { setForm((f) => ({ ...f, gallery: [...f.gallery, d.url] })); setMsg('Added to gallery.'); }
+      else setMsg(d.error || 'Upload failed.');
+    } catch { setMsg('Upload failed.'); } finally { setUploading(false); }
+  }
+  const removeGallery = (i: number) => setForm((f) => ({ ...f, gallery: f.gallery.filter((_, j) => j !== i) }));
+
   async function save() {
     if (!form.name.trim()) { setMsg('Name is required.'); return; }
     // strip 'none' status to null before saving
@@ -77,6 +90,7 @@ export default function DatabaseAdmin() {
     setForm({
       category: e.category, name: e.name, subtitle: e.subtitle || '', summary: e.summary || '',
       body: e.body || '', image_url: e.image_url || '', popular: !!e.popular, is_published: !!e.is_published,
+      status: e.status || 'confirmed', video_url: e.video_url || '', gallery: Array.isArray(e.gallery) ? e.gallery : [],
       attributes: (e.attributes || []).map((a: Attr) => ({ label: a.label || '', value: a.value || '', status: a.status || 'none', href: a.href || '' })),
       related: e.related || [],
     });
@@ -144,6 +158,37 @@ export default function DatabaseAdmin() {
           </label>
         </div>
         {form.image_url && <img src={form.image_url} alt="" style={{ width: 120, height: 160, objectFit: 'cover', borderRadius: 8, marginBottom: 8, border: '1px solid #1e1e35' }} />}
+
+        {/* Overall status + video */}
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 8, flexWrap: 'wrap' }}>
+          <label style={{ fontSize: 12, color: '#9a9ab8' }}>Overall status:</label>
+          <select style={{ ...S.input, marginBottom: 0, width: 150 }} value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
+            <option value="confirmed">Confirmed</option>
+            <option value="rumor">Rumor</option>
+            <option value="leak">Leak</option>
+          </select>
+          <input style={{ ...S.input, marginBottom: 0, flex: 1, minWidth: 180 }} placeholder="YouTube video URL (optional)" value={form.video_url} onChange={(e) => setForm({ ...form, video_url: e.target.value })} />
+        </div>
+
+        {/* Gallery */}
+        <div style={{ margin: '10px 0' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+            <strong style={{ fontSize: 13, color: '#9a9ab8' }}>GALLERY ({form.gallery.length} images)</strong>
+            <label style={{ ...S.ghost, whiteSpace: 'nowrap', opacity: uploading ? .6 : 1 }}>{uploading ? 'Uploading…' : '⬆ Add image'}
+              <input type="file" accept="image/*" style={{ display: 'none' }} disabled={uploading} onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadGallery(f); e.target.value = ''; }} />
+            </label>
+          </div>
+          {form.gallery.length > 0 && (
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              {form.gallery.map((src, i) => (
+                <div key={i} style={{ position: 'relative' }}>
+                  <img src={src} alt="" style={{ width: 80, height: 60, objectFit: 'cover', borderRadius: 6, border: '1px solid #1e1e35' }} />
+                  <button onClick={() => removeGallery(i)} style={{ position: 'absolute', top: -6, right: -6, background: '#b3261e', color: '#fff', border: 'none', borderRadius: '50%', width: 20, height: 20, cursor: 'pointer', fontSize: 11 }}>✕</button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* Attributes builder */}
         <div style={{ margin: '10px 0' }}>
