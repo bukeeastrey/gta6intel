@@ -1051,3 +1051,59 @@ body, .nl-input, .ai-inp, .f-inp { font-family: var(--font-stack-inter); }
 .db-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-top: 16px; }
 .db-gallery-img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 10px; border: 1px solid var(--border-drk); cursor: pointer; transition: transform .15s; }
 .db-gallery-img:hover { transform: scale(1.02); }
+
+/* ════════════════════════════════════════════════════════════
+   Homepage 4-tile database showcase (HomeDatabaseTiles)
+   ════════════════════════════════════════════════════════════ */
+.hdb-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; max-width: 1180px; margin: 0 auto; padding: 0 20px; }
+@media (max-width: 680px) { .hdb-grid { grid-template-columns: 1fr; } }
+.hdb-tile {
+  position: relative; display: block; border-radius: 16px; overflow: hidden;
+  text-decoration: none; aspect-ratio: 16 / 9; background: #140f1e;
+  transform-style: preserve-3d; will-change: transform;
+  box-shadow: 0 6px 20px rgba(15,15,15,.10);
+  transition: transform .25s cubic-bezier(.2,.7,.3,1), box-shadow .25s;
+}
+.hdb-tile:hover { box-shadow: 0 18px 44px rgba(255,92,0,.18), 0 8px 22px rgba(15,15,15,.18); }
+.hdb-bg { position: absolute; inset: 0; background-size: cover; background-position: center; transform: scale(1.04); }
+.hdb-bg.ken { animation: hdbKen 13s ease-in-out infinite alternate; }
+@keyframes hdbKen { from { transform: scale(1.04) translate3d(0,0,0); } to { transform: scale(1.13) translate3d(0,-2%,0); } }
+.hdb-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(8,6,14,.92) 0%, rgba(8,6,14,.38) 52%, rgba(8,6,14,.08) 100%); }
+.hdb-emoji-wrap { position: absolute; top: 16px; left: 18px; animation: hdbFloat 4s ease-in-out infinite; }
+.hdb-emoji { display: inline-block; font-size: 46px; filter: drop-shadow(0 4px 10px rgba(0,0,0,.5)); transition: transform .25s; }
+.hdb-tile:hover .hdb-emoji { transform: scale(1.18) rotate(-7deg); }
+@keyframes hdbFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+.hdb-foot { position: absolute; left: 0; right: 0; bottom: 0; padding: 18px 20px; }
+.hdb-name { display: flex; align-items: center; gap: 10px; color: #fff; font-weight: 900; font-size: 26px; letter-spacing: .01em; text-shadow: 0 2px 10px rgba(0,0,0,.55); }
+.hdb-count { background: var(--orange); color: #fff; font-weight: 900; font-size: 13px; padding: 3px 11px; border-radius: 100px; }
+.hdb-blurb { margin-top: 5px; max-width: 92%; color: rgba(255,255,255,.82); font-size: 13px; line-height: 1.35; text-shadow: 0 1px 6px rgba(0,0,0,.5); }
+.hdb-shine { position: absolute; top: 0; bottom: 0; left: -45%; width: 35%; transform: skewX(-18deg); background: linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent); opacity: 0; pointer-events: none; }
+.hdb-tile:hover .hdb-shine { animation: hdbShine .85s ease; }
+@keyframes hdbShine { 0% { left: -45%; opacity: 0; } 30% { opacity: 1; } 100% { left: 120%; opacity: 0; } }
+
+/* ════════════════════════════════════════════════════════════
+   The State of Leonida — confirmed regions panel (LeonidaRegions)
+   ════════════════════════════════════════════════════════════ */
+.leonida-map-wrap { margin-bottom: 10px; }
+.leonida-map { max-width: 1180px; margin: 0 auto; padding: 0 20px; }
+.leonida-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+@media (max-width: 860px) { .leonida-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 540px) { .leonida-grid { grid-template-columns: 1fr; } }
+.leonida-region {
+  display: flex; align-items: flex-start; gap: 10px; padding: 14px 16px;
+  background: var(--bg-off); border: 1px solid rgba(15,15,15,.08); border-radius: 12px;
+  transition: transform .18s, border-color .18s, box-shadow .18s;
+}
+.leonida-region:hover { transform: translateY(-2px); border-color: var(--orange); box-shadow: 0 8px 20px rgba(255,92,0,.10); }
+.leonida-dot { flex: 0 0 auto; width: 9px; height: 9px; margin-top: 6px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 0 4px var(--orange-dim); }
+.leonida-region-name { font-weight: 800; font-size: 15px; color: var(--ink); }
+.leonida-region-note { font-size: 12.5px; color: var(--ink-soft); margin-top: 2px; }
+.leonida-map-img { position: relative; aspect-ratio: 16 / 9; border-radius: 14px; background-size: cover; background-position: center; }
+.leonida-map-ribbon { position: absolute; top: 12px; left: 12px; background: #b3261e; color: #fff; font-weight: 800; font-size: 12px; letter-spacing: .04em; padding: 5px 12px; border-radius: 8px; }
+.leonida-disclaimer { max-width: 720px; margin: 14px auto 0; font-size: 12.5px; line-height: 1.5; color: var(--ink-soft); }
+
+@media (prefers-reduced-motion: reduce) {
+  .hdb-bg.ken, .hdb-emoji-wrap { animation: none !important; }
+  .hdb-tile, .hdb-emoji, .leonida-region { transition: none !important; }
+  .hdb-tile:hover .hdb-shine { animation: none; }
+}

@@ -11,7 +11,8 @@ import { getFeaturedArticles, getLatestArticles, getHotArticles } from '@/lib/ar
 import { getDatabaseCategories } from '@/lib/database';
 import { HeroSlider } from '@/components/home/HeroSlider';
 import { NewsGrid } from '@/components/home/NewsGrid';
-import { CategoryTiles } from '@/components/database/CategoryTiles';
+import { HomeDatabaseTiles } from '@/components/home/HomeDatabaseTiles';
+import { LeonidaRegions } from '@/components/home/LeonidaRegions';
 import { SocialFollow, BandMarquee, FutureSection } from '@/components/home/HomeSections';
 import { AdSlot } from '@/components/ui/AdSlot';
 
@@ -85,8 +86,11 @@ export default async function HomePage() {
         <Link href="/database" className="section-link rr">Explore All →</Link>
       </div>
       <div className="home-db-tiles">
-        <CategoryTiles categories={dbCategories} />
+        <HomeDatabaseTiles categories={dbCategories} />
       </div>
+
+      {/* The State of Leonida — confirmed regions panel (credible "map") */}
+      <LeonidaRegions />
 
       {/* TRENDING / HOT — articles flagged in /admin (only shows if any) */}
       {hot.length > 0 && (
