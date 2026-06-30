@@ -124,6 +124,42 @@ export async function getEntriesByCategory(category: string): Promise<DbEntry[]>
   return (data ?? []).map(toEntry);
 }
 
+/** Homepage Rockstar-style showcase: a few image-bearing entries per
+ *  flagship category, each with a one-line "writeup" (its summary). */
+export interface ShowcaseSlide { name: string; slug: string; line: string; image: string; }
+export interface HomeShowcase { characters: ShowcaseSlide[]; locations: ShowcaseSlide[]; vehicles: ShowcaseSlide[]; }
+
+export async function getHomeShowcase(): Promise<HomeShowcase> {
+  const out: HomeShowcase = { characters: [], locations: [], vehicles: [] };
+  const supabase = createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from('database_entries')
+    .select('category, name, slug, summary, subtitle, image_url, popular')
+    .eq('is_published', true)
+    .in('category', ['characters', 'locations', 'vehicles'])
+    .not('image_url', 'is', null)
+    .order('popular', { ascending: false })
+    .order('name', { ascending: true });
+  if (error) {
+    console.error('[getHomeShowcase]', error.message);
+    return out;
+  }
+  for (const r of data ?? []) {
+    const cat = String(r.category) as keyof HomeShowcase;
+    if (!out[cat] || !r.image_url) continue;
+    out[cat].push({
+      name: String(r.name),
+      slug: String(r.slug),
+      line: String(r.summary ?? r.subtitle ?? ''),
+      image: String(r.image_url),
+    });
+  }
+  out.characters = out.characters.slice(0, 8);
+  out.locations = out.locations.slice(0, 6);
+  out.vehicles = out.vehicles.slice(0, 6);
+  return out;
+}
+
 /** One entry by category + slug. */
 export async function getEntry(category: string, slug: string): Promise<DbEntry | null> {
   const supabase = createSupabaseServerClient();

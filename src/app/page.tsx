@@ -8,11 +8,11 @@
 // ════════════════════════════════════════════════════════════
 import Link from 'next/link';
 import { getFeaturedArticles, getLatestArticles, getHotArticles } from '@/lib/articles';
-import { getDatabaseCategories } from '@/lib/database';
+import { getHomeShowcase } from '@/lib/database';
 import { HeroSlider } from '@/components/home/HeroSlider';
 import { NewsGrid } from '@/components/home/NewsGrid';
-import { HomeDatabaseTiles } from '@/components/home/HomeDatabaseTiles';
-import { LeonidaRegions } from '@/components/home/LeonidaRegions';
+import { HomeDatabaseShowcase } from '@/components/home/HomeDatabaseShowcase';
+import { LeonidaMapComingSoon } from '@/components/home/LeonidaMapComingSoon';
 import { SocialFollow, BandMarquee, FutureSection } from '@/components/home/HomeSections';
 import { AdSlot } from '@/components/ui/AdSlot';
 
@@ -23,11 +23,11 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gta6intel-gg.com';
 
 export default async function HomePage() {
   // Fetch in parallel to keep TTFB low.
-  const [featured, latest, hot, dbCategories] = await Promise.all([
+  const [featured, latest, hot, showcase] = await Promise.all([
     getFeaturedArticles(4),
     getLatestArticles(6), // trimmed: full list lives behind "View All"
     getHotArticles(3),
-    getDatabaseCategories(),
+    getHomeShowcase(),
   ]);
 
   // Structured data: site search + the latest-intel list.
@@ -78,19 +78,17 @@ export default async function HomePage() {
       <SocialFollow />
       <BandMarquee />
 
-      {/* GTA 6 DATABASE — image tiles + counts (evergreen reference hub) */}
-      <div className="section-header">
+      {/* GTA 6 DATABASE — Rockstar-style image showcase */}
+      <div className="section-header db-intro-sm">
         <h2 className="section-title rl">
           GTA 6 <span>Database</span>
         </h2>
         <Link href="/database" className="section-link rr">Explore All →</Link>
       </div>
-      <div className="home-db-tiles">
-        <HomeDatabaseTiles categories={dbCategories} />
-      </div>
+      <HomeDatabaseShowcase characters={showcase.characters} locations={showcase.locations} vehicles={showcase.vehicles} />
 
-      {/* The State of Leonida — confirmed regions panel (credible "map") */}
-      <LeonidaRegions />
+      {/* Map of Leonida — locked placeholder (no fake/leaked map) */}
+      <LeonidaMapComingSoon />
 
       {/* TRENDING / HOT — articles flagged in /admin (only shows if any) */}
       {hot.length > 0 && (
