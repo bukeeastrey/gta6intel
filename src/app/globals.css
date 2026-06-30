@@ -1135,8 +1135,10 @@ body, .nl-input, .ai-inp, .f-inp { font-family: var(--font-stack-inter); }
 .rp-pre-kicker { color: var(--orange); font-weight: 800; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
 .rp-preorder .rp-title { margin: 4px 0 12px; color: var(--ink); }
 .rp-editions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
-.rp-edition { border: 1px solid rgba(15,15,15,.12); border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; }
-.rp-edition-ult { border-color: var(--orange); background: rgba(255,92,0,.06); }
+.rp-edition { appearance: none; cursor: pointer; background: #fff; border: 1px solid rgba(15,15,15,.12); border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; text-align: left; transition: border-color .15s, background .15s; }
+.rp-edition:hover { border-color: rgba(255,92,0,.5); }
+.rp-edition.is-sel { border-color: var(--orange); background: rgba(255,92,0,.06); }
+.rp-ed-includes { margin: 0 0 12px; font-size: 12px; line-height: 1.45; color: var(--ink-soft); }
 .rp-ed-name { font-size: 12px; font-weight: 700; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .04em; }
 .rp-ed-price { font-size: 20px; font-weight: 900; color: var(--ink); }
 .rp-facts { list-style: none; margin: 0 0 16px; padding: 0; }
@@ -1145,3 +1147,12 @@ body, .nl-input, .ai-inp, .f-inp { font-family: var(--font-stack-inter); }
 .rp-facts strong { color: var(--ink); }
 .rp-cta { margin-top: auto; display: inline-block; text-align: center; background: var(--orange); color: #fff; font-weight: 800; font-size: 14px; padding: 11px 18px; border-radius: 100px; text-decoration: none; transition: filter .15s, transform .15s; }
 .rp-cta:hover { filter: brightness(1.07); transform: translateY(-1px); }
+
+/* Characters reel — seamless loop with active/dimmed frames */
+.dbx-reel-track { position: absolute; inset: 0; display: flex; height: 100%; transition: transform 1.2s cubic-bezier(.7,0,.2,1); will-change: transform; }
+.dbx-rframe { position: relative; height: 100%; flex: 0 0 auto; display: block; overflow: hidden; text-decoration: none; }
+.dbx-rbg { position: absolute; inset: 0; background-size: cover; background-position: center; transition: filter .6s ease; }
+.dbx-rframe:not(.is-active) .dbx-rbg { filter: brightness(.4) saturate(.85); }
+.dbx-rframe .dbx-text { transition: opacity .5s ease; }
+.dbx-rframe:not(.is-active) .dbx-text { opacity: 0; pointer-events: none; }
+@media (prefers-reduced-motion: reduce) { .dbx-reel-track { transition: none !important; } }

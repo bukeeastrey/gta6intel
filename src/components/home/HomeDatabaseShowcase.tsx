@@ -35,24 +35,69 @@ function Text({ label, name, line, small }: { label: string; name?: string; line
 }
 
 function CharactersHero({ slides }: { slides: ShowcaseSlide[] }) {
-  const i = useAutoIndex(slides.length, 6500);
-  const active = slides[i];
-  const n = Math.max(slides.length, 1);
+  const n = slides.length;
+  const [pos, setPos] = useState(0);
+  const [animate, setAnimate] = useState(true);
+
+  useEffect(() => {
+    if (n < 2 || prefersReduced()) return;
+    const id = setInterval(() => setPos((p) => p + 1), 8000);
+    return () => clearInterval(id);
+  }, [n]);
+
+  useEffect(() => {
+    if (n >= 2 && pos === n) {
+      const t = setTimeout(() => { setAnimate(false); setPos(0); }, 1300);
+      return () => clearTimeout(t);
+    }
+  }, [pos, n]);
+  useEffect(() => {
+    if (!animate) {
+      const r = requestAnimationFrame(() => setAnimate(true));
+      return () => cancelAnimationFrame(r);
+    }
+  }, [animate]);
+
+  if (n === 0) {
+    return (
+      <Link href="/database/characters" className="dbx-card dbx-hero" aria-label="Explore Characters">
+        <div className="dbx-overlay" />
+        <span className="dbx-empty">Coming soon</span>
+        <Text label="Characters" />
+      </Link>
+    );
+  }
+
+  const display = n < 2 ? slides : [...slides, slides[0], slides[1 % n]];
+  const fw = 100 / display.length;
+  const frameCard = n < 2 ? 100 : 78;
+  const track: Record<string, string> = {
+    width: `${display.length * frameCard}%`,
+    transform: `translateX(-${pos * fw}%)`,
+  };
+  if (!animate) track.transition = 'none';
+
   return (
-    <Link href="/database/characters" className="dbx-card dbx-hero" aria-label="Explore Characters">
-      <div className="dbx-film">
-        <div className="dbx-track" style={{ width: `${n * 100}%`, transform: `translateX(-${i * (100 / n)}%)` }}>
-          {slides.map((s, idx) => (
-            <div key={idx} className="dbx-frame" style={{ width: `${100 / n}%`, backgroundImage: `url(${s.image})` }} />
-          ))}
-        </div>
-        <span className="dbx-perf dbx-perf-top" aria-hidden="true" />
-        <span className="dbx-perf dbx-perf-bot" aria-hidden="true" />
+    <div className="dbx-card dbx-hero dbx-reel" role="group" aria-label="Characters">
+      <div className="dbx-reel-track" style={track}>
+        {display.map((s, idx) => {
+          const isActive = n < 2 ? idx === 0 : idx === pos;
+          return (
+            <Link key={idx} href={`/database/characters/${s.slug}`} className={`dbx-rframe${isActive ? ' is-active' : ''}`} style={{ width: `${fw}%` }} aria-label={s.name}>
+              <div className="dbx-rbg" style={{ backgroundImage: `url(${s.image})` }} />
+              <div className="dbx-overlay" />
+              <div className="dbx-text">
+                <span className="dbx-label">Characters</span>
+                <span className="dbx-name">{s.name}</span>
+                {s.line && <span className="dbx-line">{s.line}</span>}
+              </div>
+            </Link>
+          );
+        })}
       </div>
-      <div className="dbx-overlay" />
-      {slides.length === 0 && <span className="dbx-empty">Coming soon</span>}
-           <Text label="Characters" name={active?.name} line={active?.line} />
-    </Link>
+      <span className="dbx-perf dbx-perf-top" aria-hidden="true" />
+      <span className="dbx-perf dbx-perf-bot" aria-hidden="true" />
+    </div>
   );
 }
 
