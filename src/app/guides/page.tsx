@@ -11,7 +11,7 @@ export const revalidate = 60;
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gta6intel-gg.com';
 
 export const metadata: Metadata = {
-  title: 'GTA 6 Guides — Walkthroughs, Tips & How-Tos — GTA6Intel',
+  title: 'GTA 6 Guides — Walkthroughs, Tips & How-Tos',
   description:
     'In-depth GTA 6 guides: walkthroughs, money methods, map secrets, and tips. Updated as the game launches.',
   alternates: { canonical: `${SITE_URL}/guides` },

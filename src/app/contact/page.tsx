@@ -5,7 +5,7 @@ import styles from '@/styles/content.module.css';
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gta6intel-gg.com';
 
 export const metadata: Metadata = {
-  title: 'Contact — GTA6Intel',
+  title: 'Contact',
   description: 'Get in touch with GTA6Intel: tips, corrections, partnerships, and support.',
   alternates: { canonical: `${SITE_URL}/contact` },
 };

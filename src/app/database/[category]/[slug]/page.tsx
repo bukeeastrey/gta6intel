@@ -22,7 +22,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { category, slug } = await params;
   const entry = await getEntry(category, slug);
-  if (!entry) return { title: 'Not found — GTA6Intel' };
+  if (!entry) return { title: 'Not found' };
   const meta = categoryMeta(category);
   const title = `${entry.name}${entry.subtitle ? ` — ${entry.subtitle}` : ''} | GTA 6 ${meta?.label ?? 'Database'} | GTA6Intel`;
   const description = entry.summary ?? `${entry.name} in GTA 6. ${entry.subtitle ?? ''}`.trim();

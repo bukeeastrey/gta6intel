@@ -4,7 +4,7 @@ import { LegalShell } from '@/components/legal/LegalShell';
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gta6intel-gg.com';
 
 export const metadata: Metadata = {
-  title: 'Cookie Policy — GTA6Intel',
+  title: 'Cookie Policy',
   description: 'How GTA6Intel uses cookies, including advertising cookies from Google.',
   alternates: { canonical: `${SITE_URL}/cookies` },
 };

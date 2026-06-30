@@ -24,7 +24,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { slug } = await params;
   const article = await getArticleBySlug(slug);
-  if (!article) return { title: 'Article not found — GTA6Intel' };
+  if (!article) return { title: 'Article not found' };
 
   const title = `${article.title} — GTA6Intel`;
   const description = article.summary ?? `${article.title}. The latest GTA 6 intel on GTA6Intel.`;

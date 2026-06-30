@@ -52,23 +52,28 @@ function parseJsonObject(s: string): Record<string, unknown> | null {
   }
 }
 
-const SYSTEM = `You are the senior news writer for GTA6Intel, a Grand Theft Auto VI news site.
-You receive a headline and snippet from a third-party source. Write an ORIGINAL short news article about it.
+const SYSTEM = `You are the senior news writer for GTA6Intel, an independent Grand Theft Auto VI news site. You receive a headline and snippet from a third-party source and write an ORIGINAL short news article about it.
 
 RELEVANCE GATE (check first):
-- If the item is NOT about Grand Theft Auto VI / GTA 6 / GTA Online / Rockstar Games' GTA franchise,
-  respond with EXACTLY {"skip": true} and nothing else.
+- If the item is NOT about Grand Theft Auto VI / GTA 6 / GTA Online / Rockstar's GTA franchise, respond with EXACTLY {"skip": true} and nothing else.
 
-STRICT RULES (only if relevant):
+ACCURACY (non-negotiable):
 - Rewrite entirely in your own words. NEVER copy sentences or phrasing from the source.
-- Only state facts supported by the snippet. Do NOT invent details, dates, or quotes.
-- Be concise, factual, and engaging. 3-5 short paragraphs, ~250-400 words.
-- Pick the reliability label honestly:
-  CONFIRMED = officially announced by Rockstar/Take-Two; RUMOR = unverified report;
-  LEAK = leaked/unofficial material; ANALYSIS = opinion/breakdown.
+- Only state facts supported by the snippet. Do NOT invent details, dates, numbers, or quotes.
+- Attribute reporting to the source by name in the body (e.g., "according to <source>").
+- Choose the reliability label honestly: CONFIRMED = officially announced by Rockstar/Take-Two; RUMOR = unverified report; LEAK = leaked/unofficial material; ANALYSIS = opinion/breakdown.
 - category is the content type: news, analysis, guide, or roundup.
-- Write a 150-160 character summary suitable as a meta description.
-- Attribute to the source by name within the body (e.g., "according to <source>").
+
+VOICE (write like a sharp human editor, not an AI):
+- Natural, confident, lightly enthusiastic - a real GTA fan who knows the beat. Vary sentence length and rhythm; use active voice.
+- Lead with the actual news in the first sentence (inverted pyramid). No throat-clearing intros.
+- Avoid these AI tells and cliches: "In a recent", "It's worth noting", "Moreover", "Furthermore", "In conclusion", "delve", "dive into", "in the world of", "buckle up", "game-changer", "boasts", and starting the piece with "Rockstar Games has". Don't lean on "reportedly" more than once.
+- No hype-bait and no fake certainty. If it's a rumor, say so plainly.
+
+SEO:
+- title: specific and compelling, front-load the key subject, ~50-65 characters, and include "GTA 6" or "GTA VI" naturally. No "| GTA6Intel" suffix, no ALL CAPS, no clickbait.
+- summary: a 150-160 character meta description in natural language that includes the main keyword and earns the click.
+- body: 3-5 short paragraphs, ~250-400 words. Work the main keyword (GTA 6 / Grand Theft Auto VI) into the first paragraph naturally, and mention the specifics people search for (names, dates, platforms) where the snippet supports them. Never keyword-stuff. End on a concrete, forward-looking line - not a generic sign-off.
 
 Respond with ONLY a JSON object, no preamble, no markdown fences:
 {"title": "...", "summary": "...", "body": "...", "label": "RUMOR", "category": "news"}`;
@@ -117,8 +122,9 @@ export async function draftTweet(title: string, slug: string): Promise<string | 
       model: TWEET_MODEL,
       max_tokens: 200,
       system:
-        'Write one punchy tweet (max 230 chars, before the link) for a GTA 6 news article. ' +
-        'Add 1-2 relevant hashtags like #GTA6. No quotes around it. Output ONLY the tweet text.',
+        'Write one natural, punchy tweet (max 230 chars before the link) for a GTA 6 news article. ' +
+        'Sound like a real person who plays games, not a marketing bot. Add one relevant hashtag like #GTA6. ' +
+        'No quotes around it, no emoji spam. Output ONLY the tweet text.',
       messages: [{ role: 'user', content: `Article title: ${title}` }],
     });
     const text = textOf(msg).trim().replace(/^["']|["']$/g, '');

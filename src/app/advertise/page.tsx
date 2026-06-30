@@ -5,7 +5,7 @@ import styles from '@/styles/content.module.css';
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gta6intel-gg.com';
 
 export const metadata: Metadata = {
-  title: 'Advertise — GTA6Intel',
+  title: 'Advertise',
   description: 'Reach a highly engaged GTA 6 audience. Advertising and partnership opportunities on GTA6Intel.',
   alternates: { canonical: `${SITE_URL}/advertise` },
 };

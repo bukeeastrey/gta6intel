@@ -15,7 +15,7 @@ type Params = Promise<{ slug: string }>;
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { slug } = await params;
   const guide = await getArticleBySlug(slug);
-  if (!guide) return { title: 'Guide not found — GTA6Intel' };
+  if (!guide) return { title: 'Guide not found' };
 
   const title = `${guide.title} — GTA6Intel Guides`;
   const description = guide.summary ?? `${guide.title}. A GTA 6 guide from GTA6Intel.`;

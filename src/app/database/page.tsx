@@ -11,7 +11,7 @@ export const revalidate = 300;
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gta6intel-gg.com';
 
 export const metadata: Metadata = {
-  title: 'GTA 6 Database — Characters, Vehicles, Locations & More | GTA6Intel',
+  title: 'GTA 6 Database — Characters, Vehicles, Locations & More',
   description:
     'The complete GTA 6 database. Browse every confirmed character, vehicle, location, weapon and more — each detail clearly labeled Confirmed, Rumor or Leak.',
   alternates: { canonical: `${SITE_URL}/database` },

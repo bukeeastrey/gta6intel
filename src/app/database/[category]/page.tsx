@@ -21,8 +21,8 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { category } = await params;
   const meta = categoryMeta(category);
-  if (!meta) return { title: 'Database — GTA6Intel' };
-  const title = `GTA 6 ${meta.label} — Full Database | GTA6Intel`;
+  if (!meta) return { title: 'Database' };
+  const title = `GTA 6 ${meta.label} — Full Database`;
   const description = `Every GTA 6 ${meta.label.toLowerCase()} in one place. ${meta.blurb} Each detail labeled Confirmed, Rumor or Leak.`;
   return {
     title,

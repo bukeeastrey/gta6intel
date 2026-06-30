@@ -6,7 +6,7 @@ import styles from '@/styles/content.module.css';
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gta6intel-gg.com';
 
 export const metadata: Metadata = {
-  title: 'Newsletter — GTA6Intel',
+  title: 'Newsletter',
   description: 'Get the latest GTA 6 intel delivered to your inbox — confirmed news, leaks, and analysis.',
   alternates: { canonical: `${SITE_URL}/newsletter` },
 };

@@ -4,7 +4,7 @@ import { LegalShell } from '@/components/legal/LegalShell';
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gta6intel-gg.com';
 
 export const metadata: Metadata = {
-  title: 'Terms of Use — GTA6Intel',
+  title: 'Terms of Use',
   description: 'The terms governing your use of GTA6Intel (gta6intel-gg.com).',
   alternates: { canonical: `${SITE_URL}/terms` },
 };

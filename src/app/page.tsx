@@ -7,6 +7,7 @@
 //   • Leaderboard ad below the hero (desktop), WebSite + ItemList JSON-LD
 // ════════════════════════════════════════════════════════════
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { getFeaturedArticles, getLatestArticles, getHotArticles } from '@/lib/articles';
 import { getHomeShowcase } from '@/lib/database';
 import { HeroSlider } from '@/components/home/HeroSlider';
@@ -21,6 +22,14 @@ import { AdSlot } from '@/components/ui/AdSlot';
 export const revalidate = 60;
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gta6intel-gg.com';
+
+export const metadata: Metadata = {
+  // `absolute` so the layout template doesn't double the brand on the homepage.
+  title: { absolute: 'GTA 6 News, Database & Release Date Countdown — GTA6Intel' },
+  description:
+    'Your independent hub for Grand Theft Auto VI: confirmed news, a source-checked GTA 6 database, trailers, and a live countdown to the November 19, 2026 launch.',
+  alternates: { canonical: '/' },
+};
 
 export default async function HomePage() {
   // Fetch in parallel to keep TTFB low.

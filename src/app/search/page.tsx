@@ -9,7 +9,7 @@ import { SearchBar } from '@/components/ui/SearchBar';
 import styles from '@/styles/content.module.css';
 
 export const metadata: Metadata = {
-  title: 'Search — GTA6Intel',
+  title: 'Search',
   robots: { index: false, follow: true },
 };
 

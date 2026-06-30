@@ -10,7 +10,7 @@ export const revalidate = 60;
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gta6intel-gg.com';
 
 export const metadata: Metadata = {
-  title: 'GTA 6 Videos — Trailers, Breakdowns & Analysis — GTA6Intel',
+  title: 'GTA 6 Videos — Trailers, Breakdowns & Analysis',
   description: 'Watch the latest GTA 6 trailers, frame-by-frame breakdowns, and video analysis.',
   alternates: { canonical: `${SITE_URL}/videos` },
   openGraph: {

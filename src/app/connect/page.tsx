@@ -4,7 +4,7 @@ import { LegalShell } from '@/components/legal/LegalShell';
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gta6intel-gg.com';
 
 export const metadata: Metadata = {
-  title: 'Connect Your Game — GTA6Intel',
+  title: 'Connect Your Game',
   description: 'Personalized GTA 6 tracking and stats — coming at launch.',
   alternates: { canonical: `${SITE_URL}/connect` },
 };
