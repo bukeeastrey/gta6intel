@@ -12,7 +12,8 @@ import { getHomeShowcase } from '@/lib/database';
 import { HeroSlider } from '@/components/home/HeroSlider';
 import { NewsGrid } from '@/components/home/NewsGrid';
 import { HomeDatabaseShowcase } from '@/components/home/HomeDatabaseShowcase';
-import { LeonidaMapComingSoon } from '@/components/home/LeonidaMapComingSoon';
+import { MapsComingSoon } from '@/components/home/MapsComingSoon';
+import { HomeRadioPreorder } from '@/components/home/HomeRadioPreorder';
 import { SocialFollow, BandMarquee, FutureSection } from '@/components/home/HomeSections';
 import { AdSlot } from '@/components/ui/AdSlot';
 
@@ -87,8 +88,8 @@ export default async function HomePage() {
       </div>
       <HomeDatabaseShowcase characters={showcase.characters} locations={showcase.locations} vehicles={showcase.vehicles} />
 
-      {/* Map of Leonida — locked placeholder (no fake/leaked map) */}
-      <LeonidaMapComingSoon />
+      {/* Maps — locked placeholder (no fake/leaked map) */}
+      <MapsComingSoon />
 
       {/* TRENDING / HOT — articles flagged in /admin (only shows if any) */}
       {hot.length > 0 && (
@@ -110,6 +111,9 @@ export default async function HomePage() {
         <Link href="/news" className="section-link rr">View All →</Link>
       </div>
       <NewsGrid articles={latest} />
+
+      {/* RADIO + PRE-ORDER (compact) */}
+      <HomeRadioPreorder />
 
       {/* POST-LAUNCH COVERAGE */}
       <FutureSection />

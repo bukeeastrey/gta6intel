@@ -1069,14 +1069,14 @@ body, .nl-input, .ai-inp, .f-inp { font-family: var(--font-stack-inter); }
 
 /* Characters filmstrip */
 .dbx-film { position: absolute; inset: 0; overflow: hidden; }
-.dbx-track { position: absolute; inset: 0; display: flex; height: 100%; transition: transform .9s cubic-bezier(.7,0,.2,1); }
+.dbx-track { position: absolute; inset: 0; display: flex; height: 100%; transition: transform 1.2s cubic-bezier(.7,0,.2,1); }
 .dbx-frame { height: 100%; flex: 0 0 auto; background-size: cover; background-position: center; }
-.dbx-perf { position: absolute; left: 0; right: 0; height: 14px; z-index: 2; background-color: rgba(10,8,16,.82); background-image: repeating-linear-gradient(90deg, transparent 0 8px, rgba(244,241,237,.85) 8px 14px, transparent 14px 22px); }
+.dbx-perf { position: absolute; left: 0; right: 0; height: 7px; z-index: 2; background-color: rgba(10,8,16,.5); background-image: repeating-linear-gradient(90deg, transparent 0 26px, rgba(244,241,237,.5) 26px 29px, transparent 29px 30px); }
 .dbx-perf-top { top: 0; } .dbx-perf-bot { bottom: 0; }
 
 /* Places/Vehicles crossfade */
 .dbx-fades { position: absolute; inset: 0; }
-.dbx-fade { position: absolute; inset: 0; background-size: cover; background-position: center; transition: opacity 1s ease; }
+.dbx-fade { position: absolute; inset: 0; background-size: cover; background-position: center; transition: opacity 1.4s ease; }
 
 .dbx-overlay { position: absolute; inset: 0; z-index: 3; background: linear-gradient(to top, rgba(8,6,14,.92) 0%, rgba(8,6,14,.4) 46%, rgba(8,6,14,.05) 78%); }
 .dbx-text { position: absolute; left: 0; bottom: 0; z-index: 4; padding: 24px 26px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; max-width: 64%; }
@@ -1105,3 +1105,43 @@ body, .nl-input, .ai-inp, .f-inp { font-family: var(--font-stack-inter); }
   .dbx-track, .dbx-fade { transition: none !important; }
   .dbx-name, .dbx-line { animation: none !important; }
 }
+
+/* ════════════════════════════════════════════════════════════
+   Homepage Radio + Pre-order band (compact)
+   ════════════════════════════════════════════════════════════ */
+.rp-grid { max-width: 1180px; margin: 0 auto; padding: 0 20px; display: grid; grid-template-columns: 1.1fr 1fr; gap: 16px; }
+@media (max-width: 760px) { .rp-grid { grid-template-columns: 1fr; } }
+.rp-card { border-radius: 14px; padding: 18px 20px; }
+.rp-radio { background: #15101f; color: #fff; }
+.rp-preorder { background: #ffffff; border: 1px solid rgba(15,15,15,.08); display: flex; flex-direction: column; }
+.rp-title { margin: 0; font-size: 17px; font-weight: 900; color: inherit; }
+
+.rp-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.rp-radio-icon { display: inline-flex; align-items: center; justify-content: center; min-width: 40px; height: 32px; padding: 0 8px; background: var(--orange); color: #fff; border-radius: 10px; font-weight: 800; font-size: 12px; letter-spacing: .04em; }
+.rp-radio .rp-sub { margin: 0; font-size: 12px; color: rgba(255,255,255,.6); }
+.rp-head-link { margin-left: auto; color: var(--orange); font-weight: 700; font-size: 13px; text-decoration: none; }
+.rp-songs { list-style: none; margin: 0; padding: 0; }
+.rp-song { display: flex; align-items: center; gap: 12px; padding: 7px 0; border-top: 1px solid rgba(255,255,255,.08); }
+.rp-song:first-child { border-top: none; }
+.rp-song-no { width: 18px; text-align: center; font-size: 12px; color: rgba(255,255,255,.4); font-weight: 700; }
+.rp-song-meta { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.rp-song-title { font-size: 13.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rp-song-artist { font-size: 11.5px; color: rgba(255,255,255,.55); }
+.rp-song-play { width: 28px; height: 28px; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; background: rgba(255,92,0,.16); color: var(--orange); border-radius: 50%; font-size: 11px; text-decoration: none; transition: background .15s; }
+.rp-song-play:hover { background: var(--orange); color: #fff; }
+.rp-radio-foot { margin: 12px 0 0; font-size: 11.5px; color: rgba(255,255,255,.55); }
+.rp-radio-foot strong { color: #fff; }
+
+.rp-pre-kicker { color: var(--orange); font-weight: 800; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
+.rp-preorder .rp-title { margin: 4px 0 12px; color: var(--ink); }
+.rp-editions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.rp-edition { border: 1px solid rgba(15,15,15,.12); border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; }
+.rp-edition-ult { border-color: var(--orange); background: rgba(255,92,0,.06); }
+.rp-ed-name { font-size: 12px; font-weight: 700; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .04em; }
+.rp-ed-price { font-size: 20px; font-weight: 900; color: var(--ink); }
+.rp-facts { list-style: none; margin: 0 0 16px; padding: 0; }
+.rp-facts li { font-size: 12.5px; color: var(--ink-soft); padding: 3px 0 3px 16px; position: relative; }
+.rp-facts li::before { content: '•'; position: absolute; left: 0; color: var(--orange); }
+.rp-facts strong { color: var(--ink); }
+.rp-cta { margin-top: auto; display: inline-block; text-align: center; background: var(--orange); color: #fff; font-weight: 800; font-size: 14px; padding: 11px 18px; border-radius: 100px; text-decoration: none; transition: filter .15s, transform .15s; }
+.rp-cta:hover { filter: brightness(1.07); transform: translateY(-1px); }

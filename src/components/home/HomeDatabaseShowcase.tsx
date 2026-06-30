@@ -35,7 +35,7 @@ function Text({ label, name, line, small }: { label: string; name?: string; line
 }
 
 function CharactersHero({ slides }: { slides: ShowcaseSlide[] }) {
-  const i = useAutoIndex(slides.length, 4200);
+  const i = useAutoIndex(slides.length, 6500);
   const active = slides[i];
   const n = Math.max(slides.length, 1);
   return (
@@ -57,7 +57,7 @@ function CharactersHero({ slides }: { slides: ShowcaseSlide[] }) {
 }
 
 function MiniCard({ slides, label, href }: { slides: ShowcaseSlide[]; label: string; href: string }) {
-  const i = useAutoIndex(slides.length, 5200);
+  const i = useAutoIndex(slides.length, 9000);
   const active = slides[i];
   return (
     <Link href={href} className="dbx-card dbx-mini" aria-label={`Explore ${label}`}>
