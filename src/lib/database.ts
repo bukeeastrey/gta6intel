@@ -89,19 +89,27 @@ function toEntry(r: Record<string, unknown>): DbEntry {
 }
 
 /** Category hub: every category with its live entry count + a cover image. */
+/** Best display image for an entry: the main image, else the first gallery image. */
+export function entryImage(e: { image_url?: string | null; gallery?: string[] | null }): string | null {
+  if (e.image_url) return e.image_url;
+  if (Array.isArray(e.gallery) && e.gallery.length > 0) return e.gallery[0];
+  return null;
+}
+
 export async function getDatabaseCategories(): Promise<DbCategoryMeta[]> {
   const supabase = createSupabaseServerClient();
   const { data, error } = await supabase
     .from('database_entries')
-    .select('category, image_url, popular')
+    .select('category, image_url, gallery, popular')
     .eq('is_published', true);
   const counts: Record<string, number> = {};
   const covers: Record<string, string> = {};
   if (!error && data) {
     for (const row of data) {
       counts[row.category] = (counts[row.category] ?? 0) + 1;
-      // Prefer a popular entry's image as the cover; else first available.
-      if (row.image_url && (!covers[row.category] || row.popular)) covers[row.category] = row.image_url as string;
+      // Prefer a popular entry's image (main or first gallery) as the cover; else first available.
+      const img = entryImage(row as { image_url?: string | null; gallery?: string[] | null });
+      if (img && (!covers[row.category] || row.popular)) covers[row.category] = img;
     }
   }
   return DB_CATEGORIES.map((c) => ({ ...c, count: counts[c.key] ?? 0, cover: covers[c.key] ?? null }));
@@ -134,10 +142,9 @@ export async function getHomeShowcase(): Promise<HomeShowcase> {
   const supabase = createSupabaseServerClient();
   const { data, error } = await supabase
     .from('database_entries')
-    .select('category, name, slug, summary, subtitle, image_url, popular')
+    .select('category, name, slug, summary, subtitle, image_url, gallery, popular')
     .eq('is_published', true)
     .in('category', ['characters', 'locations', 'vehicles'])
-    .not('image_url', 'is', null)
     .order('popular', { ascending: false })
     .order('name', { ascending: true });
   if (error) {
@@ -146,12 +153,13 @@ export async function getHomeShowcase(): Promise<HomeShowcase> {
   }
   for (const r of data ?? []) {
     const cat = String(r.category) as keyof HomeShowcase;
-    if (!out[cat] || !r.image_url) continue;
+    const img = entryImage(r as { image_url?: string | null; gallery?: string[] | null });
+    if (!out[cat] || !img) continue;
     out[cat].push({
       name: String(r.name),
       slug: String(r.slug),
       line: String(r.summary ?? r.subtitle ?? ''),
-      image: String(r.image_url),
+      image: img,
     });
   }
   out.characters = out.characters.slice(0, 8);

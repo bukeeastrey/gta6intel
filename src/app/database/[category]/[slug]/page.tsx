@@ -7,7 +7,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { getEntry, getAllEntryParams, categoryMeta, type DbAttr } from '@/lib/database';
+import { getEntry, getAllEntryParams, categoryMeta, entryImage, type DbAttr } from '@/lib/database';
 import { VoteBox } from '@/components/database/VoteBox';
 
 export const revalidate = 60;
@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       description,
       url: canonical,
       type: 'profile',
-      images: entry.image_url ? [{ url: entry.image_url }] : undefined,
+      images: entryImage(entry) ? [{ url: entryImage(entry) as string }] : undefined,
     },
   };
 }
@@ -64,7 +64,7 @@ export default async function EntryPage({ params }: { params: Params }) {
     '@type': category === 'characters' ? 'Person' : 'Thing',
     name: entry.name,
     description: entry.summary ?? undefined,
-    image: entry.image_url ?? undefined,
+    image: entryImage(entry) ?? undefined,
     url: `${SITE_URL}/database/${category}/${slug}`,
   };
 
@@ -87,8 +87,8 @@ export default async function EntryPage({ params }: { params: Params }) {
       <div className="db-entry-grid">
         {/* Left: portrait + video + gallery + bio */}
         <div className="db-entry-main">
-          <div className="db-entry-img" style={entry.image_url ? { backgroundImage: `url(${entry.image_url})` } : undefined}>
-            {!entry.image_url && <span className="db-card-ph big">{entry.name.charAt(0)}</span>}
+          <div className="db-entry-img" style={entryImage(entry) ? { backgroundImage: `url(${entryImage(entry)})` } : undefined}>
+            {!entryImage(entry) && <span className="db-card-ph big">{entry.name.charAt(0)}</span>}
           </div>
 
           {/* Video embed (character in motion / location flythrough) */}

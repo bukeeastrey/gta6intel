@@ -4,6 +4,7 @@
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import type { DbEntry } from '@/lib/database';
+import { entryImage } from '@/lib/database';
 
 function topStatus(e: DbEntry): string {
   // The "headline" credibility of an entry = best status among its attributes.
@@ -66,11 +67,13 @@ export function CategoryBrowser({ entries, categoryKey }: { entries: DbEntry[]; 
         <div className="db-grid">
           {view.map((e) => (
             <Link key={e.slug} href={`/database/${categoryKey}/${e.slug}`} className="db-card">
-              <div className="db-card-img" style={e.image_url ? { backgroundImage: `url(${e.image_url})` } : undefined}>
-                {!e.image_url && <span className="db-card-ph">{e.name.charAt(0)}</span>}
+              {(() => { const img = entryImage(e); return (
+              <div className="db-card-img" style={img ? { backgroundImage: `url(${img})` } : undefined}>
+                {!img && <span className="db-card-ph">{e.name.charAt(0)}</span>}
                 {e.popular && <span className="db-badge-pop">POPULAR</span>}
                 <span className={`db-badge-st st-${topStatus(e)}`}>{topStatus(e) === 'none' ? '' : topStatus(e).toUpperCase()}</span>
               </div>
+              ); })()}
               <div className="db-card-body">
                 <div className="db-card-name">{e.name}</div>
                 {e.subtitle && <div className="db-card-sub">{e.subtitle}</div>}
