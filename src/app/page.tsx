@@ -15,6 +15,7 @@ import { NewsGrid } from '@/components/home/NewsGrid';
 import { HomeDatabaseShowcase } from '@/components/home/HomeDatabaseShowcase';
 import { MapsComingSoon } from '@/components/home/MapsComingSoon';
 import { HomeRadioPreorder } from '@/components/home/HomeRadioPreorder';
+import { HomeFaq } from '@/components/home/HomeFaq';
 import { SocialFollow, BandMarquee, FutureSection } from '@/components/home/HomeSections';
 import { AdSlot } from '@/components/ui/AdSlot';
 
@@ -111,6 +112,9 @@ export default async function HomePage() {
           <NewsGrid articles={hot} />
         </>
       )}
+
+      {/* FAQ — high-intent, confirmed answers + FAQPage schema */}
+      <HomeFaq />
 
       {/* LATEST INTEL (trimmed — full feed behind View All) */}
       <div className="section-header">
