@@ -52,7 +52,7 @@ export default async function HomePage() {
         description: 'Independent GTA 6 news, guides and intelligence hub.',
         potentialAction: {
           '@type': 'SearchAction',
-          target: `${SITE_URL}/news?q={search_term_string}`,
+          target: `${SITE_URL}/search?q={search_term_string}`,
           'query-input': 'required name=search_term_string',
         },
       },

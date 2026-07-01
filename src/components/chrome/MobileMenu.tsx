@@ -13,6 +13,7 @@ const LINKS = [
   { label: 'Confirmed', href: '/news?category=confirmed' },
   { label: 'Intel', href: '/news?category=intel' },
   { label: 'Analysis', href: '/news?category=analysis' },
+  { label: 'Database', href: '/database' },
   { label: 'Videos', href: '/videos' },
   { label: 'Guides', href: '/guides' },
 ];

@@ -39,8 +39,19 @@ export default async function CategoryPage({ params }: { params: Params }) {
 
   const entries = await getEntriesByCategory(category);
 
+  const breadcrumbLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+      { '@type': 'ListItem', position: 2, name: 'GTA 6 Database', item: `${SITE_URL}/database` },
+      { '@type': 'ListItem', position: 3, name: meta.label, item: `${SITE_URL}/database/${category}` },
+    ],
+  };
+
   return (
     <main className="db-wrap">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
       <div className="db-head">
         <Link href="/database" className="db-back">← DATABASE</Link>
         <h1 className="db-h1">GTA 6 <span className="orange">{meta.label}</span></h1>

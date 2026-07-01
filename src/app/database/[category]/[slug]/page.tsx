@@ -68,9 +68,21 @@ export default async function EntryPage({ params }: { params: Params }) {
     url: `${SITE_URL}/database/${category}/${slug}`,
   };
 
+  const breadcrumbLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+      { '@type': 'ListItem', position: 2, name: 'GTA 6 Database', item: `${SITE_URL}/database` },
+      { '@type': 'ListItem', position: 3, name: meta?.label ?? category, item: `${SITE_URL}/database/${category}` },
+      { '@type': 'ListItem', position: 4, name: entry.name, item: `${SITE_URL}/database/${category}/${slug}` },
+    ],
+  };
+
   return (
     <main className="db-wrap db-entry">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
 
       <div className="db-entry-head">
         <Link href={`/database/${category}`} className="db-back">← {meta?.label.toUpperCase() ?? 'DATABASE'}</Link>
