@@ -2,7 +2,7 @@
 // unsubscribed. The token is an HMAC of the email, so links can't be forged.
 // POST supports RFC 8058 one-click unsubscribe from the List-Unsubscribe header.
 import { verifyUnsub } from '@/lib/email';
-import { createSupabaseServerClient } from '@/lib/supabaseServer';
+import { createSupabaseAdminClient } from '@/lib/supabaseAdmin';
 
 export const dynamic = 'force-dynamic';
 
@@ -27,7 +27,7 @@ async function handle(req: Request) {
   if (!email || !verifyUnsub(email, token)) {
     return page('This unsubscribe link is invalid or has expired.');
   }
-  const supabase = createSupabaseServerClient();
+  const supabase = createSupabaseAdminClient();
   await supabase.from('subscribers').update({ unsubscribed: true }).eq('email', email);
   return page('You have been unsubscribed. Sorry to see you go — you can resubscribe anytime.');
 }

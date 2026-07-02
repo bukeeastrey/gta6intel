@@ -5,6 +5,7 @@
 // ════════════════════════════════════════════════════════════
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabaseServer';
+import { sendWelcome } from '@/lib/email';
 
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
@@ -21,10 +22,17 @@ export async function POST(req: Request) {
     const { error } = await supabase.from('subscribers').insert({ email });
 
     if (error) {
-      // 23505 = unique violation → already subscribed, that's fine.
+      // 23505 = unique violation → already subscribed, that's fine (no re-welcome).
       if (error.code === '23505') return NextResponse.json({ ok: true, already: true });
       console.error('[newsletter]', error.message);
       return NextResponse.json({ error: 'Could not subscribe' }, { status: 500 });
+    }
+
+    // New subscriber → send the welcome email (best-effort; never block signup).
+    try {
+      await sendWelcome(email);
+    } catch (e) {
+      console.error('[newsletter] welcome email failed', (e as Error).message);
     }
 
     return NextResponse.json({ ok: true });

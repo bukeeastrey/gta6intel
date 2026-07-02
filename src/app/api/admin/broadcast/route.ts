@@ -2,7 +2,7 @@
 // single test address). GET returns the active subscriber count. Admin-gated.
 import { NextResponse } from 'next/server';
 import { isAdmin, unauthorized } from '@/lib/admin';
-import { createSupabaseServerClient } from '@/lib/supabaseServer';
+import { createSupabaseAdminClient } from '@/lib/supabaseAdmin';
 import { sendBroadcast } from '@/lib/email';
 
 export const dynamic = 'force-dynamic';
@@ -10,7 +10,7 @@ export const maxDuration = 60; // Hobby max; large lists need a queue (see READ-
 
 export async function GET(req: Request) {
   if (!isAdmin(req)) return unauthorized();
-  const supabase = createSupabaseServerClient();
+  const supabase = createSupabaseAdminClient();
   const { count } = await supabase
     .from('subscribers')
     .select('*', { count: 'exact', head: true })
@@ -38,7 +38,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ ...r, test: true });
   }
 
-  const supabase = createSupabaseServerClient();
+  const supabase = createSupabaseAdminClient();
   const { data, error } = await supabase
     .from('subscribers')
     .select('email')

@@ -30,7 +30,7 @@ export function NewsletterSignup() {
     return (
       <div className="nl-row" aria-live="polite">
         <span style={{ fontSize: 12, color: 'var(--confirmed)', fontWeight: 600 }}>
-          ✓ You&apos;re in — check your inbox to confirm.
+          ✓ You&apos;re in — check your inbox for a welcome email.
         </span>
       </div>
     );

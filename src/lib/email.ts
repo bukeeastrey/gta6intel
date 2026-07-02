@@ -73,3 +73,16 @@ export async function sendBroadcast(subject: string, html: string, recipients: s
   }
   return { sent, failed };
 }
+
+/** Welcome email sent right after someone subscribes to The Intel Drop. */
+export async function sendWelcome(email: string): Promise<SendResult> {
+  const subject = 'Welcome to The Intel Drop';
+  const html = `<div style="font:16px/1.6 Arial,sans-serif;color:#0F0F0F;max-width:560px;margin:0 auto">
+  <h1 style="color:#FF5C00;font-size:22px;margin:0 0 12px">You're in.</h1>
+  <p>Welcome to <b>The Intel Drop</b> — GTA6Intel's newsletter. You'll get the week's most important <b>Grand Theft Auto VI</b> news: confirmed drops, credible leaks, and sharp analysis, always clearly labeled so you know what to trust.</p>
+  <p>GTA 6 launches <b>November 19, 2026</b>. We'll keep you ahead of it — no spam, no made-up details.</p>
+  <p style="margin:22px 0"><a href="${SITE_URL}" style="display:inline-block;background:#FF5C00;color:#fff;text-decoration:none;font-weight:700;padding:11px 22px;border-radius:100px">Explore GTA6Intel &rarr;</a></p>
+  <p style="color:#666">See you in your inbox,<br/>The GTA6Intel team</p>
+</div>`;
+  return sendBroadcast(subject, html, [email]);
+}
