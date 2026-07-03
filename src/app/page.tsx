@@ -13,7 +13,7 @@ import { getHomeShowcase } from '@/lib/database';
 import { HeroSlider } from '@/components/home/HeroSlider';
 import { NewsGrid } from '@/components/home/NewsGrid';
 import { HomeDatabaseShowcase } from '@/components/home/HomeDatabaseShowcase';
-import { MapsComingSoon } from '@/components/home/MapsComingSoon';
+import { LeonidaMap } from '@/components/home/LeonidaMap';
 import { HomeRadioPreorder } from '@/components/home/HomeRadioPreorder';
 import { HomeFaq } from '@/components/home/HomeFaq';
 import { SocialFollow, BandMarquee, FutureSection } from '@/components/home/HomeSections';
@@ -98,8 +98,8 @@ export default async function HomePage() {
       </div>
       <HomeDatabaseShowcase characters={showcase.characters} locations={showcase.locations} vehicles={showcase.vehicles} />
 
-      {/* Maps — locked placeholder (no fake/leaked map) */}
-      <MapsComingSoon />
+      {/* Maps — interactive speculative Leonida map */}
+      <LeonidaMap />
 
       {/* TRENDING / HOT — articles flagged in /admin (only shows if any) */}
       {hot.length > 0 && (

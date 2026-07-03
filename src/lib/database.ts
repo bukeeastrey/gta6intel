@@ -96,6 +96,26 @@ export function entryImage(e: { image_url?: string | null; gallery?: string[] | 
   return null;
 }
 
+/** Search published database entries by name / subtitle / summary. */
+export async function searchEntries(q: string, limit = 24): Promise<DbEntry[]> {
+  const term = q.trim().replace(/[,()%*]/g, ' ').trim();
+  if (!term) return [];
+  const supabase = createSupabaseServerClient();
+  const like = `%${term}%`;
+  const { data, error } = await supabase
+    .from('database_entries')
+    .select(COLS)
+    .eq('is_published', true)
+    .or(`name.ilike.${like},subtitle.ilike.${like},summary.ilike.${like}`)
+    .order('popular', { ascending: false })
+    .limit(limit);
+  if (error) {
+    console.error('[searchEntries]', error.message);
+    return [];
+  }
+  return (data ?? []).map((r) => toEntry(r as Record<string, unknown>));
+}
+
 export async function getDatabaseCategories(): Promise<DbCategoryMeta[]> {
   const supabase = createSupabaseServerClient();
   const { data, error } = await supabase

@@ -1170,3 +1170,64 @@ body, .nl-input, .ai-inp, .f-inp { font-family: var(--font-stack-inter); }
 .faq-item[open] .faq-chev { transform: rotate(45deg); }
 .faq-item[open] .faq-q { color: var(--orange); }
 .faq-a { padding: 0 18px 16px; font-size: 14px; line-height: 1.6; color: var(--ink-soft); }
+
+/* ════════════════════════════════════════════════════════════
+   Search results
+   ════════════════════════════════════════════════════════════ */
+.search-results { max-width: 1180px; margin: 0 auto; padding: 0 20px 60px; }
+.search-results .rv { opacity: 1 !important; transform: none !important; } /* results always visible */
+.search-section { margin-top: 22px; }
+.search-h2 { font-size: 13px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); margin: 0 0 14px; }
+.search-db-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
+.search-db-card { display: flex; gap: 12px; align-items: center; background: #fff; border: 1px solid rgba(15,15,15,.08); border-radius: 12px; padding: 10px; text-decoration: none; transition: border-color .15s, transform .15s; }
+.search-db-card:hover { border-color: var(--orange); transform: translateY(-1px); }
+.search-db-img { flex: 0 0 auto; width: 60px; height: 60px; border-radius: 9px; background-size: cover; background-position: center; background-color: #e7e3da; display: flex; align-items: center; justify-content: center; }
+.search-db-ph { font-weight: 900; color: var(--orange); font-size: 22px; }
+.search-db-meta { display: flex; flex-direction: column; min-width: 0; }
+.search-db-cat { font-size: 10.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--orange); }
+.search-db-name { font-size: 15px; font-weight: 800; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.search-db-sub { font-size: 12px; color: var(--ink-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ════════════════════════════════════════════════════════════
+   Gallery lightbox
+   ════════════════════════════════════════════════════════════ */
+.db-gallery-thumb { padding: 0; border: none; background: none; cursor: pointer; display: block; border-radius: 10px; overflow: hidden; }
+.db-gallery-thumb .db-gallery-img { transition: transform .2s ease; }
+.db-gallery-thumb:hover .db-gallery-img { transform: scale(1.04); }
+.lb-overlay { position: fixed; inset: 0; z-index: 1000; background: rgba(8,6,12,.92); display: flex; align-items: center; justify-content: center; padding: 40px; animation: lbfade .18s ease; }
+@keyframes lbfade { from { opacity: 0 } to { opacity: 1 } }
+.lb-img { max-width: 92vw; max-height: 86vh; object-fit: contain; border-radius: 8px; box-shadow: 0 20px 60px rgba(0,0,0,.5); }
+.lb-close { position: absolute; top: 18px; right: 22px; width: 44px; height: 44px; border-radius: 50%; border: none; background: rgba(255,255,255,.12); color: #fff; font-size: 26px; cursor: pointer; line-height: 1; }
+.lb-close:hover { background: rgba(255,255,255,.24); }
+.lb-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 52px; height: 52px; border-radius: 50%; border: none; background: rgba(255,255,255,.12); color: #fff; font-size: 34px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.lb-nav:hover { background: var(--orange); }
+.lb-prev { left: 20px; } .lb-next { right: 20px; }
+.lb-counter { position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,.85); font-size: 13px; font-weight: 600; background: rgba(0,0,0,.4); padding: 5px 12px; border-radius: 100px; }
+@media (max-width: 640px) { .lb-nav { width: 42px; height: 42px; font-size: 28px; } .lb-prev { left: 8px } .lb-next { right: 8px } .lb-overlay { padding: 16px } }
+
+/* ════════════════════════════════════════════════════════════
+   Interactive Leonida map (speculative)
+   ════════════════════════════════════════════════════════════ */
+.lm-wrap { max-width: 1180px; margin: 0 auto; padding: 0 20px; }
+.lm-card { background: #fff; border: 1px solid rgba(15,15,15,.08); border-radius: 16px; overflow: hidden; }
+.lm-banner { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: rgba(255,92,0,.06); border-bottom: 1px solid rgba(255,92,0,.15); flex-wrap: wrap; }
+.lm-badge { flex: 0 0 auto; background: var(--orange); color: #fff; font-size: 11px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; padding: 4px 10px; border-radius: 100px; }
+.lm-banner-txt { font-size: 12.5px; color: var(--ink-soft); }
+.lm-viewport { position: relative; height: 560px; background: #cfe2ea; overflow: hidden; touch-action: none; cursor: grab; }
+.lm-viewport:active { cursor: grabbing; }
+.lm-canvas { width: 100%; height: 100%; }
+.lm-svg { width: 100%; height: 100%; display: block; }
+.lm-controls { position: absolute; top: 14px; right: 14px; display: flex; flex-direction: column; gap: 6px; }
+.lm-controls button { width: 38px; height: 38px; border-radius: 9px; border: 1px solid rgba(15,15,15,.12); background: #fff; font-size: 20px; font-weight: 800; color: var(--ink); cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,.08); }
+.lm-controls button:hover { border-color: var(--orange); color: var(--orange); }
+.lm-controls .lm-reset { width: 38px; height: auto; padding: 7px 0; font-size: 10px; font-weight: 800; letter-spacing: .03em; }
+.lm-info { padding: 16px; border-top: 1px solid rgba(15,15,15,.08); }
+.lm-info-head { display: flex; align-items: center; gap: 10px; }
+.lm-info-head h3 { margin: 0; font-size: 18px; font-weight: 900; color: var(--ink); }
+.lm-status { font-size: 10px; font-weight: 800; letter-spacing: .05em; padding: 3px 8px; border-radius: 100px; }
+.lm-confirmed { background: rgba(22,160,90,.12); color: #12855c; }
+.lm-rumor { background: rgba(255,92,0,.12); color: var(--orange); }
+.lm-insp { margin: 4px 0 6px; font-size: 12.5px; color: var(--orange); font-weight: 700; }
+.lm-note { margin: 0; font-size: 13.5px; line-height: 1.5; color: var(--ink-soft); }
+.lm-hint { padding: 13px 16px; margin: 0; font-size: 12px; color: var(--ink-soft); border-top: 1px solid rgba(15,15,15,.08); text-align: center; }
+@media (max-width: 640px) { .lm-viewport { height: 440px; } }

@@ -8,6 +8,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getEntry, getAllEntryParams, categoryMeta, entryImage, type DbAttr } from '@/lib/database';
+import { GalleryLightbox } from '@/components/database/GalleryLightbox';
 import { VoteBox } from '@/components/database/VoteBox';
 
 export const revalidate = 60;
@@ -130,14 +131,9 @@ export default async function EntryPage({ params }: { params: Params }) {
             ) : null;
           })}
 
-          {/* Image gallery */}
+          {/* Image gallery (click to open full-view lightbox) */}
           {entry.gallery.length > 0 && (
-            <div className="db-gallery">
-              {entry.gallery.map((src, i) => (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img key={i} src={src} alt={`${entry.name} ${i + 1}`} className="db-gallery-img" />
-              ))}
-            </div>
+            <GalleryLightbox images={entry.gallery} name={entry.name} />
           )}
 
           {entry.body && (
