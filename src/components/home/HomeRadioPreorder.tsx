@@ -6,7 +6,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 
-const PREORDER_URL = 'https://www.rockstargames.com/VI';
+const PREORDER_URL = '/buy-gta-6'; // routes to the on-site money page (affiliate links)
 
 const SOUNDTRACK: { title: string; artist: string }[] = [
   { title: 'Love Is a Long Road', artist: 'Tom Petty' },
