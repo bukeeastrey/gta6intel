@@ -6,8 +6,8 @@
 import { useState } from 'react';
 import { GalleryLightbox } from '@/components/database/GalleryLightbox';
 
-const BASE_MAP = '';         // 👉 e.g. 'https://<supabase>/storage/v1/object/public/site/leonida.jpg'
-const BASE_MAP_CREDIT = '';  // 👉 e.g. 'Map by AvatarSD — used with permission'
+const BASE_MAP = 'https://uveamjbuljhptpdhmtdk.supabase.co/storage/v1/object/public/article-images/articles/gta6%20map.jpg';
+const BASE_MAP_CREDIT = 'Community map via Pinterest — creator credit pending';
 
 type Region = {
   id: string; name: string; x: number; y: number;
@@ -15,25 +15,25 @@ type Region = {
 };
 
 const REGIONS: Region[] = [
-  { id: 'kalaga', name: 'Mount Kalaga', x: 52, y: 15, status: 'confirmed',
+  { id: 'kalaga', name: 'Mount Kalaga', x: 45, y: 10, status: 'confirmed',
     insp: 'North Florida / Providence Canyon, GA',
     note: "Remote northern highlands - forests, canyons, hunting and off-road country." },
-  { id: 'gellhorn', name: 'Port Gellhorn', x: 19, y: 45, status: 'confirmed',
+  { id: 'gellhorn', name: 'Port Gellhorn', x: 12, y: 25, status: 'confirmed',
     insp: 'Panama City, FL',
     note: 'A faded industrial port town on the western coast - motels, rail yards, smuggling.' },
-  { id: 'ambrosia', name: 'Ambrosia', x: 50, y: 42, status: 'confirmed',
+  { id: 'ambrosia', name: 'Ambrosia', x: 41, y: 24, status: 'confirmed',
     insp: 'Rural / industrial central Florida',
     note: 'Industrial heartland by Lake Leonida - refineries, farmland, biker gangs.' },
-  { id: 'lake', name: 'Lake Leonida', x: 43, y: 34, status: 'rumor',
+  { id: 'lake', name: 'Lake Leonida', x: 43, y: 31, status: 'rumor',
     insp: 'Lake Okeechobee',
     note: 'Large central lake - widely mapped by the community, not an official name.' },
-  { id: 'grassrivers', name: 'Grassrivers', x: 33, y: 66, status: 'confirmed',
+  { id: 'grassrivers', name: 'Grassrivers', x: 27, y: 63, status: 'confirmed',
     insp: 'The Everglades',
     note: 'Subtropical wetlands - airboats, mangroves, alligators, off-grid communities.' },
-  { id: 'vicecity', name: 'Vice City', x: 70, y: 60, status: 'confirmed',
+  { id: 'vicecity', name: 'Vice City', x: 70, y: 52, status: 'confirmed',
     insp: 'Miami, FL',
     note: 'The neon-soaked centrepiece - Art Deco beaches, nightlife, canals, downtown.' },
-  { id: 'keys', name: 'Leonida Keys', x: 62, y: 87, status: 'confirmed',
+  { id: 'keys', name: 'Leonida Keys', x: 34, y: 89, status: 'confirmed',
     insp: 'The Florida Keys',
     note: 'Southern island chain linked by long bridges. Jason and Lucia start here.' },
 ];
@@ -73,7 +73,6 @@ export function LeonidaMap({ media = {} }: { media?: Record<string, string[]> })
                 aria-label={r.name}
               >
                 <span className="lm-pin-dot" />
-                <span className="lm-pin-label">{r.name}</span>
               </button>
             ))}
 
