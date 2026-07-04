@@ -1204,30 +1204,47 @@ body, .nl-input, .ai-inp, .f-inp { font-family: var(--font-stack-inter); }
 .lb-prev { left: 20px; } .lb-next { right: 20px; }
 .lb-counter { position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,.85); font-size: 13px; font-weight: 600; background: rgba(0,0,0,.4); padding: 5px 12px; border-radius: 100px; }
 @media (max-width: 640px) { .lb-nav { width: 42px; height: 42px; font-size: 28px; } .lb-prev { left: 8px } .lb-next { right: 8px } .lb-overlay { padding: 16px } }
-
 /* ════════════════════════════════════════════════════════════
-   Interactive Leonida map (speculative)
+   Interactive Leonida map — image base + pins + side panel
    ════════════════════════════════════════════════════════════ */
 .lm-wrap { max-width: 1180px; margin: 0 auto; padding: 0 20px; }
 .lm-card { background: #fff; border: 1px solid rgba(15,15,15,.08); border-radius: 16px; overflow: hidden; }
 .lm-banner { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: rgba(255,92,0,.06); border-bottom: 1px solid rgba(255,92,0,.15); flex-wrap: wrap; }
 .lm-badge { flex: 0 0 auto; background: var(--orange); color: #fff; font-size: 11px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; padding: 4px 10px; border-radius: 100px; }
 .lm-banner-txt { font-size: 12.5px; color: var(--ink-soft); }
-.lm-viewport { position: relative; height: 620px; background: linear-gradient(#3d7fa6, #22536f); overflow: hidden; touch-action: none; cursor: grab; }
-.lm-viewport:active { cursor: grabbing; }
-.lm-canvas { width: 100%; height: 100%; }
-.lm-svg { width: 100%; height: 100%; display: block; }
-.lm-controls { position: absolute; top: 14px; right: 14px; display: flex; flex-direction: column; gap: 6px; }
-.lm-controls button { width: 38px; height: 38px; border-radius: 9px; border: 1px solid rgba(15,15,15,.12); background: #fff; font-size: 20px; font-weight: 800; color: var(--ink); cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,.08); }
-.lm-controls button:hover { border-color: var(--orange); color: var(--orange); }
-.lm-controls .lm-reset { width: 38px; height: auto; padding: 7px 0; font-size: 10px; font-weight: 800; letter-spacing: .03em; }
-.lm-info { padding: 16px; border-top: 1px solid rgba(15,15,15,.08); }
-.lm-info-head { display: flex; align-items: center; gap: 10px; }
-.lm-info-head h3 { margin: 0; font-size: 18px; font-weight: 900; color: var(--ink); }
+
+.lm-stage { display: grid; grid-template-columns: 1.7fr 1fr; min-height: 460px; }
+@media (max-width: 780px) { .lm-stage { grid-template-columns: 1fr; } }
+
+/* map area */
+.lm-map { position: relative; overflow: hidden; background: #cfe2ea; }
+.lm-base { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.lm-map-placeholder { background: radial-gradient(120% 90% at 50% 30%, #e9eef2 0%, #d7e2e8 55%, #c3d3da 100%); }
+.lm-grid-bg { position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(90,122,140,.12) 1px, transparent 1px), linear-gradient(90deg, rgba(90,122,140,.12) 1px, transparent 1px);
+  background-size: 46px 46px; }
+
+/* pins */
+.lm-pin { position: absolute; transform: translate(-50%, -100%); background: none; border: none; padding: 0; cursor: pointer; display: flex; flex-direction: column; align-items: center; z-index: 2; }
+.lm-pin-dot { width: 20px; height: 20px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); border: 2.5px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,.35); transition: transform .12s; }
+.lm-pin-confirmed .lm-pin-dot { background: var(--orange); }
+.lm-pin-rumor .lm-pin-dot { background: #8a7fa8; }
+.lm-pin:hover .lm-pin-dot { transform: rotate(-45deg) scale(1.12); }
+.lm-pin.is-sel .lm-pin-dot { transform: rotate(-45deg) scale(1.25); box-shadow: 0 0 0 4px rgba(255,92,0,.3), 0 2px 6px rgba(0,0,0,.4); }
+.lm-pin-label { margin-top: 5px; font-size: 11px; font-weight: 800; color: #173a17; background: rgba(255,255,255,.9); padding: 2px 7px; border-radius: 100px; white-space: nowrap; box-shadow: 0 1px 3px rgba(0,0,0,.15); }
+.lm-pin-rumor .lm-pin-label { color: #45405a; }
+
+/* side panel */
+.lm-panel { border-left: 1px solid rgba(15,15,15,.08); padding: 18px; background: #fff; }
+@media (max-width: 780px) { .lm-panel { border-left: none; border-top: 1px solid rgba(15,15,15,.08); } }
+.lm-panel-empty { height: 100%; min-height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: var(--ink-soft); gap: 8px; }
+.lm-panel-empty-icon { font-size: 30px; opacity: .6; }
+.lm-p-head { display: flex; align-items: center; gap: 10px; }
+.lm-p-head h3 { margin: 0; font-size: 18px; font-weight: 900; color: var(--ink); }
 .lm-status { font-size: 10px; font-weight: 800; letter-spacing: .05em; padding: 3px 8px; border-radius: 100px; }
 .lm-confirmed { background: rgba(22,160,90,.12); color: #12855c; }
 .lm-rumor { background: rgba(255,92,0,.12); color: var(--orange); }
-.lm-insp { margin: 4px 0 6px; font-size: 12.5px; color: var(--orange); font-weight: 700; }
-.lm-note { margin: 0; font-size: 13.5px; line-height: 1.5; color: var(--ink-soft); }
-.lm-hint { padding: 13px 16px; margin: 0; font-size: 12px; color: var(--ink-soft); border-top: 1px solid rgba(15,15,15,.08); text-align: center; }
-@media (max-width: 640px) { .lm-viewport { height: 480px; } }
+.lm-insp { margin: 5px 0 6px; font-size: 12.5px; color: var(--orange); font-weight: 700; }
+.lm-note { margin: 0 0 14px; font-size: 13.5px; line-height: 1.5; color: var(--ink-soft); }
+.lm-p-gallery .db-gallery { grid-template-columns: repeat(3, 1fr); }
+.lm-p-noimg { font-size: 12.5px; color: var(--ink-soft); font-style: italic; }

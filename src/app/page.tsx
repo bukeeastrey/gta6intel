@@ -9,7 +9,7 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { getFeaturedArticles, getLatestArticles, getHotArticles } from '@/lib/articles';
-import { getHomeShowcase } from '@/lib/database';
+import { getHomeShowcase, getEntriesByCategory } from '@/lib/database';
 import { HeroSlider } from '@/components/home/HeroSlider';
 import { NewsGrid } from '@/components/home/NewsGrid';
 import { HomeDatabaseShowcase } from '@/components/home/HomeDatabaseShowcase';
@@ -40,6 +40,23 @@ export default async function HomePage() {
     getHotArticles(3),
     getHomeShowcase(),
   ]);
+
+  // Map pin photos: pull galleries from published Locations entries by slug.
+  const SLUG_TO_REGION: Record<string, string> = {
+    'vice-city': 'vicecity', 'mount-kalaga': 'kalaga', 'mount-kalaga-national-park': 'kalaga',
+    'port-gellhorn': 'gellhorn', 'ambrosia': 'ambrosia', 'grassrivers': 'grassrivers',
+    'leonida-keys': 'keys', 'lake-leonida': 'lake',
+  };
+  const mapMedia: Record<string, string[]> = {};
+  try {
+    const locs = await getEntriesByCategory('locations');
+    for (const e of locs) {
+      const rid = SLUG_TO_REGION[e.slug];
+      if (!rid) continue;
+      const imgs = [e.image_url, ...(e.gallery || [])].filter(Boolean) as string[];
+      if (imgs.length) mapMedia[rid] = imgs;
+    }
+  } catch { /* locations optional */ }
 
   // Structured data: site search + the latest-intel list.
   const jsonLd = {
@@ -99,7 +116,7 @@ export default async function HomePage() {
       <HomeDatabaseShowcase characters={showcase.characters} locations={showcase.locations} vehicles={showcase.vehicles} />
 
       {/* Maps — interactive speculative Leonida map */}
-      <LeonidaMap />
+      <LeonidaMap media={mapMedia} />
 
       {/* TRENDING / HOT — articles flagged in /admin (only shows if any) */}
       {hot.length > 0 && (
