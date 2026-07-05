@@ -177,6 +177,8 @@ export function Navbar() {
             <Link href="/buy-gta-6"><span className="dd-ic">🛒</span>Buy GTA 6</Link>
             <Link href="/gta-6-release-date"><span className="dd-ic">⏳</span>Release Date</Link>
             <Link href="/gta-6-map"><span className="dd-ic">🗺️</span>GTA 6 Map</Link>
+            <Link href="/gta-6-trailer"><span className="dd-ic">🎬</span>Trailers</Link>
+            <Link href="/gta-6-pc"><span className="dd-ic">💻</span>GTA 6 on PC</Link>
             <Link href="/connect"><span className="dd-ic">🎮</span>Connect Your Game</Link>
             <Link href="/guides"><span className="dd-ic">📚</span>Guides</Link>
             <a href="https://discord.gg/G9m5w78N9" target="_blank" rel="noopener noreferrer"><span className="dd-ic">💬</span>Join Discord</a>

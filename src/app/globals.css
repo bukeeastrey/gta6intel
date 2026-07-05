@@ -1337,3 +1337,8 @@ body, .nl-input, .ai-inp, .f-inp { font-family: var(--font-stack-inter); }
 .vtab-n { font-size: 11px; font-weight: 800; background: rgba(15,15,15,.08); color: var(--ink-soft); border-radius: 100px; padding: 1px 7px; }
 .vtab.is-active .vtab-n { background: rgba(255,255,255,.25); color: #fff; }
 .vtab-empty { text-align: center; color: var(--ink-soft); padding: 40px 20px; }
+
+/* Pillar "short answer" callout (PC page) */
+.pillar-answer { background: linear-gradient(135deg, rgba(255,92,0,.1), rgba(255,92,0,.03)); border: 1px solid rgba(255,92,0,.25); border-radius: 14px; padding: 20px 22px; margin: 24px 0 8px; }
+.pillar-answer-label { display: block; font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--orange); margin-bottom: 6px; }
+.pillar-answer p { margin: 0; font-size: 17px; line-height: 1.55; color: var(--ink); }

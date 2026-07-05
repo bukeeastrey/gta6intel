@@ -59,6 +59,8 @@ export function MobileMenu() {
         <Link href="/buy-gta-6" className="mm-more-link" onClick={closeMenu}>🛒 Buy GTA 6</Link>
         <Link href="/gta-6-release-date" className="mm-more-link" onClick={closeMenu}>⏳ Release Date</Link>
         <Link href="/gta-6-map" className="mm-more-link" onClick={closeMenu}>🗺️ GTA 6 Map</Link>
+        <Link href="/gta-6-trailer" className="mm-more-link" onClick={closeMenu}>🎬 Trailers</Link>
+        <Link href="/gta-6-pc" className="mm-more-link" onClick={closeMenu}>💻 GTA 6 on PC</Link>
         <Link href="/connect" className="mm-more-link" onClick={closeMenu}>🎮 Connect Your Game</Link>
         <a href="https://discord.gg/G9m5w78N9" className="mm-more-link" target="_blank" rel="noopener noreferrer">💬 Join Discord</a>
         <Link href="/newsletter" className="mm-more-link" onClick={closeMenu}>📧 Newsletter</Link>
