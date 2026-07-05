@@ -3,7 +3,7 @@
 // ════════════════════════════════════════════════════════════
 import type { Metadata } from 'next';
 import { getVideos } from '@/lib/videos';
-import { VideoGrid } from '@/components/videos/VideoGrid';
+import { VideoTabs } from '@/components/videos/VideoTabs';
 import styles from '@/styles/content.module.css';
 
 export const revalidate = 60;
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 };
 
 export default async function VideosPage() {
-  const videos = await getVideos(24);
+  const videos = await getVideos(48);
 
   return (
     <main>
@@ -37,7 +37,7 @@ export default async function VideosPage() {
       </header>
 
       {videos.length > 0 ? (
-        <VideoGrid videos={videos} />
+        <VideoTabs videos={videos} />
       ) : (
         <p className={styles.empty}>No videos yet — the pipeline adds them automatically. Check back soon.</p>
       )}

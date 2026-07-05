@@ -11,10 +11,11 @@ export interface Video {
   description: string | null;
   thumbnail_url: string | null;
   published_at: string | null;
+  category: 'trailer' | 'video' | 'stream';
 }
 
 const V_COLUMNS =
-  'id, youtube_id, title, description, thumbnail_url, published_at, created_at';
+  'id, youtube_id, title, description, thumbnail_url, published_at, created_at, category';
 
 function toVideo(r: Record<string, unknown>): Video {
   return {
@@ -24,6 +25,7 @@ function toVideo(r: Record<string, unknown>): Video {
     description: (r.description as string) ?? null,
     thumbnail_url: (r.thumbnail_url as string) ?? null,
     published_at: (r.published_at as string) ?? (r.created_at as string) ?? null,
+    category: ((r.category as string) as Video['category']) ?? 'video',
   };
 }
 

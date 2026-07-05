@@ -25,6 +25,7 @@ interface YtItem {
     title: string;
     description: string;
     publishedAt: string;
+    channelTitle?: string;
     thumbnails: Record<string, { url: string }>;
   };
 }
@@ -60,6 +61,12 @@ export async function GET(req: Request) {
       const t = it.snippet.thumbnails;
       const thumb = (t.maxres || t.standard || t.high || t.medium || t.default)?.url ?? null;
 
+      // Auto-tag official Rockstar uploads (or clearly-official trailers) as trailers.
+      const isTrailer =
+        it.snippet.channelTitle === 'Rockstar Games' ||
+        /official trailer/i.test(it.snippet.title);
+      const category = isTrailer ? 'trailer' : 'video';
+
       // upsert by unique youtube_id → no duplicates.
       const { error } = await supabase
         .from('videos')
@@ -70,6 +77,7 @@ export async function GET(req: Request) {
             description: it.snippet.description,
             thumbnail_url: thumb,
             published_at: it.snippet.publishedAt,
+            category,
           },
           { onConflict: 'youtube_id', ignoreDuplicates: true }
         );

@@ -1326,3 +1326,14 @@ body, .nl-input, .ai-inp, .f-inp { font-family: var(--font-stack-inter); }
 .pillar-region { background: #fff; border: 1px solid rgba(15,15,15,.09); border-radius: 12px; padding: 16px; }
 .pillar-region h3 { margin: 0 0 5px; font-size: 16px; font-weight: 900; color: var(--orange); }
 .pillar-region p { margin: 0; font-size: 13.5px; line-height: 1.55; color: var(--ink-soft); }
+
+/* ════════════════════════════════════════════════════════════
+   Video tabs (Trailers / Videos / Live)
+   ════════════════════════════════════════════════════════════ */
+.vtabs { display: flex; gap: 8px; margin: 0 auto 22px; max-width: 1180px; padding: 0 20px; flex-wrap: wrap; }
+.vtab { display: inline-flex; align-items: center; gap: 7px; background: #fff; border: 1px solid rgba(15,15,15,.12); border-radius: 100px; padding: 9px 16px; font-size: 14px; font-weight: 800; color: var(--ink-soft); cursor: pointer; transition: border-color .15s, color .15s; }
+.vtab:hover { border-color: rgba(255,92,0,.5); }
+.vtab.is-active { background: var(--orange); border-color: var(--orange); color: #fff; }
+.vtab-n { font-size: 11px; font-weight: 800; background: rgba(15,15,15,.08); color: var(--ink-soft); border-radius: 100px; padding: 1px 7px; }
+.vtab.is-active .vtab-n { background: rgba(255,255,255,.25); color: #fff; }
+.vtab-empty { text-align: center; color: var(--ink-soft); padding: 40px 20px; }
