@@ -10,6 +10,7 @@ import type { ArticleFull } from '@/lib/articles';
 import { longDate } from '@/lib/utils';
 import { CategoryBadge } from '@/components/ui/CategoryBadge';
 import { AdSlot } from '@/components/ui/AdSlot';
+import { RelatedLinks } from '@/components/article/RelatedLinks';
 import styles from '@/styles/content.module.css';
 
 interface ArticleViewProps {
@@ -85,6 +86,8 @@ export function ArticleView({ article, backHref, backLabel }: ArticleViewProps) 
           Read the original source →
         </a>
       )}
+
+      <RelatedLinks title={article.title} body={article.body} />
     </article>
   );
 }

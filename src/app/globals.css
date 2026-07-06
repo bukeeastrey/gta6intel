@@ -1342,3 +1342,21 @@ body, .nl-input, .ai-inp, .f-inp { font-family: var(--font-stack-inter); }
 .pillar-answer { background: linear-gradient(135deg, rgba(255,92,0,.1), rgba(255,92,0,.03)); border: 1px solid rgba(255,92,0,.25); border-radius: 14px; padding: 20px 22px; margin: 24px 0 8px; }
 .pillar-answer-label { display: block; font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--orange); margin-bottom: 6px; }
 .pillar-answer p { margin: 0; font-size: 17px; line-height: 1.55; color: var(--ink); }
+
+/* ════════════════════════════════════════════════════════════
+   Article related-links + Buy CTA
+   ════════════════════════════════════════════════════════════ */
+.rel-wrap { margin: 36px 0 8px; }
+.rel-cta { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  background: linear-gradient(135deg, rgba(255,92,0,.12), rgba(255,92,0,.04)); border: 1px solid rgba(255,92,0,.25);
+  border-radius: 14px; padding: 16px 20px; }
+.rel-cta-txt { display: flex; flex-direction: column; }
+.rel-cta-k { font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--orange); }
+.rel-cta-t { font-size: 14px; color: var(--ink); font-weight: 600; }
+.rel-cta-btn { flex: 0 0 auto; background: var(--orange); color: #fff; font-weight: 800; font-size: 14px; padding: 11px 20px; border-radius: 100px; text-decoration: none; }
+.rel-cta-btn:hover { filter: brightness(1.07); }
+.rel-block { margin-top: 22px; padding-top: 18px; border-top: 1px solid rgba(15,15,15,.09); }
+.rel-h { display: block; font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 10px; }
+.rel-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.rel-list a { display: inline-block; background: #fff; border: 1px solid rgba(15,15,15,.12); border-radius: 100px; padding: 7px 14px; font-size: 13px; font-weight: 700; color: var(--ink); text-decoration: none; transition: border-color .15s, color .15s; }
+.rel-list a:hover { border-color: var(--orange); color: var(--orange); }
