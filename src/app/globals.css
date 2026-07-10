@@ -105,7 +105,8 @@ body {
   position: absolute; top: calc(100% + 10px); right: 0; width: 236px;
   background: var(--white); border: 1px solid var(--border-drk);
   border-radius: var(--r); box-shadow: 0 20px 60px rgba(0,0,0,0.14);
-  overflow: hidden; opacity: 0; transform: translateY(-8px);
+  overflow-x: hidden; overflow-y: auto; max-height: min(72vh, 470px); overscroll-behavior: contain;
+  opacity: 0; transform: translateY(-8px);
   pointer-events: none; transition: opacity 0.18s, transform 0.18s; z-index: 400;
 }
 .more-wrap.open .more-dropdown { opacity: 1; transform: translateY(0); pointer-events: all; }
