@@ -64,7 +64,11 @@ export default async function HomePage() {
   let latestTrailer: Video | null = null;
   try {
     const vids = await getVideos(60);
-    latestTrailer = vids.find((v) => v.category === 'trailer') ?? null;
+    // Only an official Rockstar upload may headline the homepage.
+    latestTrailer =
+      vids.find((v) => v.category === 'trailer' && v.channel_title === 'Rockstar Games') ??
+      vids.find((v) => v.category === 'trailer') ??
+      null;
   } catch { /* optional */ }
 
   // Structured data: site search + the latest-intel list.

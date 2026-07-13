@@ -61,11 +61,11 @@ export async function GET(req: Request) {
       const t = it.snippet.thumbnails;
       const thumb = (t.maxres || t.standard || t.high || t.medium || t.default)?.url ?? null;
 
-      // Auto-tag official Rockstar uploads (or clearly-official trailers) as trailers.
-      const isTrailer =
-        it.snippet.channelTitle === 'Rockstar Games' ||
-        /official trailer/i.test(it.snippet.title);
-      const category = isTrailer ? 'trailer' : 'video';
+      // A trailer is ONLY an official Rockstar Games upload that says "trailer".
+      // (Title matching alone wrongly caught fan videos using #gta6trailer.)
+      const channelTitle = it.snippet.channelTitle ?? null;
+      const isRockstar = channelTitle === 'Rockstar Games';
+      const category = isRockstar && /trailer/i.test(it.snippet.title) ? 'trailer' : 'video';
 
       // upsert by unique youtube_id → no duplicates.
       const { error } = await supabase
@@ -78,6 +78,7 @@ export async function GET(req: Request) {
             thumbnail_url: thumb,
             published_at: it.snippet.publishedAt,
             category,
+            channel_title: channelTitle,
           },
           { onConflict: 'youtube_id', ignoreDuplicates: true }
         );
