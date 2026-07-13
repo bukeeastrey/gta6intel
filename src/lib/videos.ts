@@ -33,15 +33,32 @@ function toVideo(r: Record<string, unknown>): Video {
 
 export async function getVideos(limit = 24): Promise<Video[]> {
   const supabase = createSupabaseServerClient();
-  const { data, error } = await supabase
+
+  // Preferred query (includes category + channel_title).
+  const full = await supabase
     .from('videos')
     .select(V_COLUMNS)
     .order('published_at', { ascending: false, nullsFirst: false })
     .limit(limit);
 
-  if (error) {
-    console.error('[getVideos]', error.message);
+  if (!full.error) {
+    return (full.data ?? []).map((r) => toVideo(r as Record<string, unknown>));
+  }
+
+  // Resilience: if the optional columns haven't been added to the DB yet, a
+  // missing column would otherwise fail the WHOLE query and hide every video.
+  // Fall back to the core columns so videos still render.
+  console.error('[getVideos] full select failed, falling back:', full.error.message);
+  const basic = await supabase
+    .from('videos')
+    .select('id, youtube_id, title, description, thumbnail_url, published_at, created_at')
+    .order('published_at', { ascending: false, nullsFirst: false })
+    .limit(limit);
+
+  if (basic.error) {
+    console.error('[getVideos]', basic.error.message);
     return [];
   }
-  return (data ?? []).map((r) => toVideo(r as Record<string, unknown>));
+  return (basic.data ?? []).map((r) => toVideo(r as Record<string, unknown>));
 }
+
