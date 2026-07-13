@@ -15,7 +15,7 @@ export async function GET(req: Request) {
   const supabase = createSupabaseAdminClient();
   const { data, error } = await supabase
     .from('articles')
-    .select('id, title, slug, summary, label, category, image_url, source_name, source_url, is_published, auto_published, featured, published_at, created_at')
+    .select('id, title, slug, summary, label, category, image_url, source_name, source_url, is_published, auto_published, featured, tags, published_at, created_at')
     .order('created_at', { ascending: false })
     .limit(300);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
@@ -33,6 +33,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Title and body are required' }, { status: 400 });
     }
     const label = LABELS.includes(b.label) ? b.label : 'CONFIRMED';
+    const tags = Array.isArray(b.tags)
+      ? (b.tags as unknown[]).map((t) => String(t).trim().toLowerCase()).filter(Boolean).slice(0, 12)
+      : String(b.tags ?? '').split(',').map((t) => t.trim().toLowerCase()).filter(Boolean).slice(0, 12);
     const category = CATEGORIES.includes(b.category) ? b.category : 'news';
     const slug = `${slugify(title)}-${sha256(title + Date.now()).slice(0, 6)}`;
     const publish = b.is_published !== false; // default publish
@@ -44,6 +47,7 @@ export async function POST(req: Request) {
         slug,
         body,
         summary: String(b.summary || '').slice(0, 200),
+        tags,
         label,
         category,
         image_url: b.image_url ? String(b.image_url) : null,

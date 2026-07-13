@@ -34,6 +34,7 @@ export interface Article {
   ghost_text: string | null;
   /** Surfaces the article in the hero slider when true. */
   featured: boolean;
+  tags: string[];
   /** ISO timestamp used for ordering + "2h ago" labels. */
   published_at: string;
 }

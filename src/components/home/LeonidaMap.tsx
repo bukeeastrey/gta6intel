@@ -40,6 +40,7 @@ const REGIONS: Region[] = [
 
 export function LeonidaMap({ media = {} }: { media?: Record<string, string[]> }) {
   const [sel, setSel] = useState<Region | null>(null);
+  const [full, setFull] = useState(false);
   const images = sel ? media[sel.id] ?? [] : [];
 
   return (
@@ -54,7 +55,10 @@ export function LeonidaMap({ media = {} }: { media?: Record<string, string[]> })
           <span className="lm-banner-txt">Regions are officially confirmed; pin positions are approximate. Not an official map.</span>
         </div>
 
-        <div className="lm-mapzone">
+        <div className={`lm-mapzone${full ? ' is-full' : ''}`}>
+          <button type="button" className="lm-full-btn" onClick={() => setFull((f) => !f)} aria-label={full ? 'Exit fullscreen' : 'Expand map'}>
+            {full ? '✕ Close' : '⛶ Expand'}
+          </button>
           <div className={`lm-map${BASE_MAP ? '' : ' lm-map-placeholder'}`} onClick={() => setSel(null)}>
             {BASE_MAP ? (
               // eslint-disable-next-line @next/next/no-img-element

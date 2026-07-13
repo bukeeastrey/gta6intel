@@ -16,6 +16,8 @@ import { HomeDatabaseShowcase } from '@/components/home/HomeDatabaseShowcase';
 import { LeonidaMap } from '@/components/home/LeonidaMap';
 import { HomeRadioPreorder } from '@/components/home/HomeRadioPreorder';
 import { HomeFaq } from '@/components/home/HomeFaq';
+import { HomeTrailer } from '@/components/home/HomeTrailer';
+import { getVideos, type Video } from '@/lib/videos';
 import { SocialFollow, BandMarquee, FutureSection } from '@/components/home/HomeSections';
 import { AdSlot } from '@/components/ui/AdSlot';
 
@@ -57,6 +59,13 @@ export default async function HomePage() {
       if (imgs.length) mapMedia[rid] = imgs;
     }
   } catch { /* locations optional */ }
+
+  // Latest official trailer for the homepage hero (null if none tagged yet).
+  let latestTrailer: Video | null = null;
+  try {
+    const vids = await getVideos(60);
+    latestTrailer = vids.find((v) => v.category === 'trailer') ?? null;
+  } catch { /* optional */ }
 
   // Structured data: site search + the latest-intel list.
   const jsonLd = {
@@ -114,6 +123,9 @@ export default async function HomePage() {
         <Link href="/database" className="section-link rr">Explore All →</Link>
       </div>
       <HomeDatabaseShowcase characters={showcase.characters} locations={showcase.locations} vehicles={showcase.vehicles} />
+
+      {/* Latest official trailer */}
+      <HomeTrailer trailer={latestTrailer} />
 
       {/* Maps — interactive speculative Leonida map */}
       <LeonidaMap media={mapMedia} />

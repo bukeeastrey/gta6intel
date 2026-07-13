@@ -16,7 +16,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   const supabase = createSupabaseAdminClient();
   const { data, error } = await supabase
     .from('articles')
-    .select('id, title, slug, summary, body, label, category, image_url, source_name, source_url, is_published, auto_published, featured, published_at, created_at')
+    .select('id, title, slug, summary, body, label, category, image_url, source_name, source_url, is_published, auto_published, featured, tags, published_at, created_at')
     .eq('id', id)
     .single();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
@@ -40,6 +40,11 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     if (LABELS.includes(b.label)) patch.label = b.label;
     if (CATEGORIES.includes(b.category)) patch.category = b.category;
     if (typeof b.featured === 'boolean') patch.featured = b.featured;
+    if (b.tags !== undefined) {
+      patch.tags = Array.isArray(b.tags)
+        ? (b.tags as unknown[]).map((t) => String(t).trim().toLowerCase()).filter(Boolean).slice(0, 12)
+        : String(b.tags ?? '').split(',').map((t) => t.trim().toLowerCase()).filter(Boolean).slice(0, 12);
+    }
     if (typeof b.is_published === 'boolean') {
       patch.is_published = b.is_published;
       // first time it goes live, stamp published_at

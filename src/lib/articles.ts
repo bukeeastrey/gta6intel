@@ -10,7 +10,7 @@ import type { Article, ArticleCategory } from './types';
 
 // Columns that exist in the `articles` table (list view).
 const COLUMNS =
-  'id, slug, title, summary, image_url, published_at, created_at, source_name, label, featured';
+  'id, slug, title, summary, image_url, published_at, created_at, source_name, label, featured, tags';
 // Extra columns only needed on the full article page.
 const FULL_COLUMNS = `${COLUMNS}, body, source_url`;
 
@@ -50,6 +50,7 @@ function toArticle(r: Record<string, unknown>): Article {
     image_alt: null, // not stored → components fall back to the title
     ghost_text: null,
     featured: Boolean(r.featured),
+    tags: Array.isArray(r.tags) ? (r.tags as string[]) : [],
     published_at: (r.published_at as string) ?? (r.created_at as string),
   };
 }
@@ -243,4 +244,32 @@ export async function searchArticles(q: string, limit = 30): Promise<Article[]> 
     return [];
   }
   return (data ?? []).map(toArticle);
+}
+
+
+/** Articles carrying a given tag (case-insensitive match on the stored tag). */
+export async function getArticlesByTag(tag: string, limit = 30): Promise<Article[]> {
+  const supabase = createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from('articles')
+    .select(COLUMNS)
+    .eq('is_published', true)
+    .contains('tags', [tag.toLowerCase()])
+    .order('published_at', { ascending: false })
+    .limit(limit);
+  if (error) {
+    console.error('[getArticlesByTag]', error.message);
+    return [];
+  }
+  return (data ?? []).map((r) => toArticle(r as Record<string, unknown>));
+}
+
+/** Every distinct tag in use (for the tag index / static params). */
+export async function getAllTags(): Promise<string[]> {
+  const supabase = createSupabaseServerClient();
+  const { data, error } = await supabase.from('articles').select('tags').eq('is_published', true);
+  if (error || !data) return [];
+  const set = new Set<string>();
+  for (const r of data) for (const t of ((r.tags as string[]) ?? [])) if (t) set.add(t);
+  return [...set].sort();
 }

@@ -21,6 +21,7 @@ interface Row {
   is_published: boolean;
   auto_published: boolean;
   featured: boolean;
+  tags?: string[] | null;
   published_at: string | null;
   created_at: string;
 }
@@ -30,7 +31,7 @@ const CATEGORIES = ['news', 'analysis', 'guide', 'roundup'];
 const PW_KEY = 'gi_admin_pw';
 
 const empty = {
-  title: '', summary: '', body: '', label: 'CONFIRMED', category: 'news',
+  title: '', summary: '', body: '', tags: '', label: 'CONFIRMED', category: 'news',
   image_url: '', source_name: 'GTA6Intel', source_url: '', featured: false, is_published: true,
 };
 
@@ -128,7 +129,7 @@ export default function AdminPage() {
     setMsg('Loading article…');
     const body = await fetchBody(r.id);
     setForm({
-      title: r.title, summary: r.summary || '', body, label: r.label || 'CONFIRMED',
+      title: r.title, summary: r.summary || '', body, tags: (r.tags || []).join(', '), label: r.label || 'CONFIRMED',
       category: r.category || 'news', image_url: r.image_url || '', source_name: r.source_name || 'GTA6Intel',
       source_url: r.source_url || '', featured: r.featured, is_published: r.is_published,
     });
@@ -192,6 +193,7 @@ export default function AdminPage() {
         <input style={S.input} placeholder="Title" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
         <input style={S.input} placeholder="Summary (≤200 chars, for SEO meta)" value={form.summary} onChange={(e) => setForm({ ...form, summary: e.target.value })} />
         <textarea style={{ ...S.input, minHeight: 180, fontFamily: 'inherit' }} placeholder={editingId ? 'Body (leave empty to keep existing)' : 'Body (Markdown or plain text)'} value={form.body} onChange={(e) => setForm({ ...form, body: e.target.value })} />
+        <input style={S.input} placeholder="Tags (comma separated — e.g. gta 6 crossplay, gta 6 online)" value={form.tags} onChange={(e) => setForm({ ...form, tags: e.target.value })} />
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
           <select style={{ ...S.input, width: 'auto' }} value={form.label} onChange={(e) => setForm({ ...form, label: e.target.value })}>
             {LABELS.map((l) => <option key={l} value={l}>{l}</option>)}

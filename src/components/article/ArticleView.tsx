@@ -87,6 +87,17 @@ export function ArticleView({ article, backHref, backLabel }: ArticleViewProps) 
         </a>
       )}
 
+      {article.tags?.length > 0 && (
+        <div className="tag-chips">
+          <span className="tag-chips-h">Tags</span>
+          <ul>
+            {article.tags.map((t) => (
+              <li key={t}><Link href={`/tags/${encodeURIComponent(t)}`}>{t}</Link></li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <RelatedLinks title={article.title} body={article.body} />
     </article>
   );
