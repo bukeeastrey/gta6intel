@@ -5,6 +5,9 @@ import { VideoGrid } from '@/components/videos/VideoGrid';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gta6intel-gg.com';
 
+// Re-check the DB regularly so newly added trailers appear without a redeploy.
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: 'GTA 6 Trailers — Every Official Trailer & Breakdown',
   description:
