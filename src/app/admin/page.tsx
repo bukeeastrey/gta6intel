@@ -171,6 +171,8 @@ export default function AdminPage() {
         <h1 style={{ fontSize: 26 }}>Newsroom</h1>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
           <a style={{ ...S.ghost, textDecoration: 'none' }} href="/admin/database">🗂️ Database</a>
+          <a style={{ ...S.ghost, textDecoration: 'none' }} href="/admin/videos">🎬 Videos</a>
+          <a style={{ ...S.ghost, textDecoration: 'none' }} href="/admin/broadcast">📧 Email</a>
           <a style={{ ...S.ghost, textDecoration: 'none' }} href="/admin/archive">🖼️ Media</a>
           <button style={S.ghost} onClick={() => { sessionStorage.removeItem(PW_KEY); setAuthed(false); setPw(''); }}>Log out</button>
         </div>
