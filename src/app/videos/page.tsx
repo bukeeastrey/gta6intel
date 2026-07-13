@@ -2,7 +2,7 @@
 // /videos — YouTube video hub, pulled from the `videos` table.
 // ════════════════════════════════════════════════════════════
 import type { Metadata } from 'next';
-import { getVideos } from '@/lib/videos';
+import { getVideos, getVideosByCategory } from '@/lib/videos';
 import { VideoTabs } from '@/components/videos/VideoTabs';
 import styles from '@/styles/content.module.css';
 
@@ -22,7 +22,11 @@ export const metadata: Metadata = {
 };
 
 export default async function VideosPage() {
-  const videos = await getVideos(48);
+  const [recent, trailers] = await Promise.all([getVideos(48), getVideosByCategory('trailer', 20)]);
+  // Trailers are old (2023/2025) and fall outside the recency window, so fetch
+  // them separately and merge (deduped by id).
+  const seen = new Set(trailers.map((v) => v.id));
+  const videos = [...trailers, ...recent.filter((v) => !seen.has(v.id))];
 
   return (
     <main>

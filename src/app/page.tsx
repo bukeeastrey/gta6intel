@@ -17,7 +17,7 @@ import { LeonidaMap } from '@/components/home/LeonidaMap';
 import { HomeRadioPreorder } from '@/components/home/HomeRadioPreorder';
 import { HomeFaq } from '@/components/home/HomeFaq';
 import { HomeTrailer } from '@/components/home/HomeTrailer';
-import { getVideos, type Video } from '@/lib/videos';
+import { getVideosByCategory, type Video } from '@/lib/videos';
 import { SocialFollow, BandMarquee, FutureSection } from '@/components/home/HomeSections';
 import { AdSlot } from '@/components/ui/AdSlot';
 
@@ -63,12 +63,10 @@ export default async function HomePage() {
   // Latest official trailer for the homepage hero (null if none tagged yet).
   let latestTrailer: Video | null = null;
   try {
-    const vids = await getVideos(60);
+    const trailers = await getVideosByCategory('trailer', 10);
     // Only an official Rockstar upload may headline the homepage.
     latestTrailer =
-      vids.find((v) => v.category === 'trailer' && v.channel_title === 'Rockstar Games') ??
-      vids.find((v) => v.category === 'trailer') ??
-      null;
+      trailers.find((v) => v.channel_title === 'Rockstar Games') ?? trailers[0] ?? null;
   } catch { /* optional */ }
 
   // Structured data: site search + the latest-intel list.

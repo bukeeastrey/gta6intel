@@ -62,3 +62,27 @@ export async function getVideos(limit = 24): Promise<Video[]> {
   return (basic.data ?? []).map((r) => toVideo(r as Record<string, unknown>));
 }
 
+
+/**
+ * Videos of one category, newest first.
+ * Queried directly (not sliced out of a "recent videos" list) — trailers are old
+ * (2023/2025) and would otherwise be pushed out of the recency window by the
+ * daily pipeline ingest.
+ */
+export async function getVideosByCategory(
+  category: 'trailer' | 'video' | 'stream',
+  limit = 20
+): Promise<Video[]> {
+  const supabase = createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from('videos')
+    .select(V_COLUMNS)
+    .eq('category', category)
+    .order('published_at', { ascending: false, nullsFirst: false })
+    .limit(limit);
+  if (error) {
+    console.error('[getVideosByCategory]', error.message);
+    return [];
+  }
+  return (data ?? []).map((r) => toVideo(r as Record<string, unknown>));
+}

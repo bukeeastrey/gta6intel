@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { getVideos } from '@/lib/videos';
+import { getVideosByCategory } from '@/lib/videos';
 import { VideoGrid } from '@/components/videos/VideoGrid';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gta6intel-gg.com';
@@ -23,8 +23,7 @@ const FAQS = [
 ];
 
 export default async function TrailerPage() {
-  const all = await getVideos(60);
-  const trailers = all.filter((v) => v.category === 'trailer');
+  const trailers = await getVideosByCategory('trailer', 20);
 
   const faqLd = {
     '@context': 'https://schema.org', '@type': 'FAQPage',
