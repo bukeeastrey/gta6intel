@@ -6,12 +6,41 @@
 //   • 336×280 rectangle ad after paragraph 3 (ad spec)
 // ════════════════════════════════════════════════════════════
 import Link from 'next/link';
+import type { ReactNode } from 'react';
 import type { ArticleFull } from '@/lib/articles';
 import { longDate } from '@/lib/utils';
 import { CategoryBadge } from '@/components/ui/CategoryBadge';
 import { AdSlot } from '@/components/ui/AdSlot';
 import { RelatedLinks } from '@/components/article/RelatedLinks';
 import styles from '@/styles/content.module.css';
+
+// Render inline [text](url) links and **bold** inside a paragraph.
+// Internal links (starting with "/") use client-side navigation; external ones
+// open in a new tab. Plain text passes through untouched.
+function renderInline(text: string): ReactNode {
+  const parts: ReactNode[] = [];
+  const re = /\[([^\]]+)\]\(([^)\s]+)\)|\*\*([^*]+)\*\*/g;
+  let last = 0;
+  let m: RegExpExecArray | null;
+  let k = 0;
+  while ((m = re.exec(text)) !== null) {
+    if (m.index > last) parts.push(text.slice(last, m.index));
+    if (m[1] !== undefined) {
+      const label = m[1];
+      const url = m[2];
+      parts.push(
+        url.startsWith('/')
+          ? <Link key={k++} href={url}>{label}</Link>
+          : <a key={k++} href={url} target="_blank" rel="noopener noreferrer">{label}</a>
+      );
+    } else if (m[3] !== undefined) {
+      parts.push(<strong key={k++}>{m[3]}</strong>);
+    }
+    last = m.index + m[0].length;
+  }
+  if (last < text.length) parts.push(text.slice(last));
+  return parts.length ? parts : text;
+}
 
 interface ArticleViewProps {
   article: ArticleFull;
@@ -63,7 +92,7 @@ export function ArticleView({ article, backHref, backLabel }: ArticleViewProps) 
         {paragraphs.length > 0 ? (
           paragraphs.map((p, i) => (
             <div key={i}>
-              <p>{p}</p>
+              <p>{renderInline(p)}</p>
               {i === 2 && (
                 <div className={styles.adWrap}>
                   <AdSlot format="rectangle" slot="0000000000" />
