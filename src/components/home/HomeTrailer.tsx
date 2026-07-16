@@ -85,14 +85,16 @@ export function HomeTrailer({ trailer }: { trailer: Video | null }) {
   }
 
   return (
-    <section className="ct-sec" ref={secRef} aria-labelledby="ct-title">
-      <div className="ct-sticky">
-        <div className="ct-frame" ref={frameRef}>{media}</div>
-        <div className="ct-bar">
-          <h2 className="ct-h2" id="ct-title">Latest <span>Trailer</span></h2>
-          <Link href="/gta-6-trailer" className="ct-link">All trailers →</Link>
-        </div>
+    <>
+      <div className="section-header ct-head">
+        <h2 className="section-title rl">Latest <span>Trailer</span></h2>
+        <Link href="/gta-6-trailer" className="section-link rr">All trailers →</Link>
       </div>
-    </section>
+      <section className="ct-sec" ref={secRef} aria-label="Latest GTA 6 trailer">
+        <div className="ct-sticky">
+          <div className="ct-frame" ref={frameRef}>{media}</div>
+        </div>
+      </section>
+    </>
   );
 }
